@@ -1,0 +1,83 @@
+{
+  "especialidades": {
+    "1": {
+      "nombre_carrera": "Informática Personal y Profesional"
+    },
+    "2": {
+      "nombre_carrera": "Programación"
+    },
+    "3": {
+      "nombre_carrera": "Maestro Mayor de Obra"
+    }
+  },
+
+  "cursos": {
+    "1": {
+      "anio": 4,
+      "division": 1,
+      "especialidad_id": 1
+    },
+    "2": {
+      "anio": 4,
+      "division": 2,
+      "especialidad_id": 2
+    },
+    "3": {
+      "anio": 4,
+      "division": 3,
+      "especialidad_id": 3
+    },
+
+    "4": {
+      "anio": 5,
+      "division": 1,
+      "especialidad_id": 1
+    },
+    "5": {
+      "anio": 5,
+      "division": 2,
+      "especialidad_id": 2
+    },
+    "6": {
+      "anio": 5,
+      "division": 3,
+      "especialidad_id": 3
+    },
+
+    "7": {
+      "anio": 6,
+      "division": 1,
+      "especialidad_id": 1
+    },
+    "8": {
+      "anio": 6,
+      "division": 2,
+      "especialidad_id": 2
+    },
+    "9": {
+      "anio": 6,
+      "division": 3,
+      "especialidad_id": 3
+    },
+
+    "10": {
+      "anio": 7,
+      "division": 1,
+      "especialidad_id": 1
+    },
+    "11": {
+      "anio": 7,
+      "division": 2,
+      "especialidad_id": 2
+    },
+    "12": {
+      "anio": 7,
+      "division": 3,
+      "especialidad_id": 3
+    }
+  },
+
+  "profesores": {},
+
+  "archivos": {}
+}

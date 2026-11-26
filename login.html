@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Docente - BiblioTec</title>
+
+    <link rel="stylesheet" href="assets/css/estilos.css">
+    <link rel="stylesheet" href="assets/css/docentes.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .vista-login {
+            display: block;
+        }
+        .vista-cambio-clave {
+            display: none;
+        }
+        .caja-admin-acceso {
+            margin-top: 18px;
+            padding: 14px;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .caja-admin-acceso p {
+            font-size: 0.8rem;
+            color: #3730a3;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+        }
+        .btn-ir-admin {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 9px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-ir-admin:hover {
+            background: #4338ca;
+        }
+        .lista-dnis-demo {
+            margin-top: 12px;
+            font-size: 0.76rem;
+            color: #64748b;
+            text-align: left;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .lista-dnis-demo strong {
+            display: block;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+        .lista-dnis-demo ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+        .lista-dnis-demo li {
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+    <header class="cabecera">
+        <div class="contenedor cabecera-flex">
+
+            <div class="logo-seccion" style="cursor:pointer" onclick="window.location.href='index.html'">
+                <img src="assets/img/logo.jpg" alt="Logo" class="logo-imagen">
+
+                <div>
+                    <h1 class="logo-titulo">BiblioTec</h1>
+                    <span class="logo-subtitulo">E.E.S.T. N° 5 • Berazategui</span>
+                </div>
+            </div>
+
+            <nav class="navegacion">
+                <a href="index.html" class="enlace-nav">
+                    <i data-lucide="book-open"></i>
+                    Biblioteca Pública
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main class="login-contenedor">
+
+        <!-- LOGIN DOCENTE -->
+        <div class="tarjeta-login vista-login" id="bloque-login">
+
+            <div class="login-cabecera">
+
+                <div class="login-icono">
+                    <i data-lucide="user-check"></i>
+                </div>
+
+                <h2 class="login-titulo">Acceso Docente</h2>
+
+                <p class="login-subtitulo">
+                    Ingresá con tu DNI y contraseña
+                </p>
+
+            </div>
+
+            <div id="login-errores"></div>
+
+            <form id="formulario-login">
+
+                <div class="grupo-formulario">
+                    <label for="dni">Número de DNI</label>
+
+                    <input
+                        type="number"
+                        id="dni"
+                        required
+                        placeholder="Ej: 35123456"
+                        class="input-formulario"
+                    >
+                </div>
+
+                <div class="grupo-formulario">
+                    <label for="contrasenia">Contraseña</label>
+
+                    <input
+                        type="password"
+                        id="contrasenia"
+                        required
+                        placeholder="Contraseña (inicialmente tu DNI)"
+                        class="input-formulario"
+                    >
+                </div>
+
+                <button type="submit" class="boton-login">
+                    Ingresar como Docente
+                </button>
+
+            </form>
+
+            <div class="caja-admin-acceso">
+                <p>
+                    <strong>¿El docente todavía no está registrado?</strong><br>
+                    Cambiá a modo Administrador para dar de alta docentes con su DNI.
+                </p>
+                <button type="button" id="btn-acceso-admin" class="btn-ir-admin">
+                    <i data-lucide="shield"></i>
+                    Entrar como Administrador
+                </button>
+            </div>
+
+            <div class="lista-dnis-demo" id="lista-dnis-demo"></div>
+
+            <a href="index.html" class="enlace-retorno">
+                ← Volver a la Biblioteca
+            </a>
+
+        </div>
+
+        <!-- PRIMER INGRESO: CAMBIO DE CLAVE OBLIGATORIO -->
+        <div class="tarjeta-login vista-cambio-clave" id="bloque-cambio-clave">
+
+            <div class="login-cabecera">
+
+                <div class="login-icono" style="background:linear-gradient(135deg,#eab308,#ca8a04)">
+                    <i data-lucide="key-round"></i>
+                </div>
+
+                <h2 class="login-titulo">Primer Ingreso</h2>
+
+                <p class="login-subtitulo" id="subtitulo-primer-ingreso">
+                    Debés configurar una nueva contraseña personal.
+                </p>
+
+            </div>
+
+            <div id="cambio-errores"></div>
+
+            <form id="formulario-cambio-clave">
+
+                <div class="grupo-formulario">
+                    <label for="nueva-clave">Nueva Contraseña</label>
+
+                    <input
+                        type="password"
+                        id="nueva-clave"
+                        minlength="6"
+                        required
+                        placeholder="Mínimo 6 caracteres"
+                        class="input-formulario"
+                    >
+                </div>
+
+                <div class="grupo-formulario">
+                    <label for="repetir-clave">Repetir Contraseña</label>
+
+                    <input
+                        type="password"
+                        id="repetir-clave"
+                        minlength="6"
+                        required
+                        placeholder="Repetí la contraseña"
+                        class="input-formulario"
+                    >
+                </div>
+
+                <button type="submit" class="boton-login">
+                    Actualizar Contraseña y Entrar
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <script src="assets/js/bibliotec-store.js"></script>
+    <script>
+        const store = window.BiblioTecStore;
+        let dniPendienteCambio = null;
+
+        function renderizarListaDnisRegistrados() {
+            const cont = document.getElementById('lista-dnis-demo');
+            const profesores = store.getProfesores();
+            if (profesores.length === 0) {
+                cont.innerHTML = '<strong>Docentes registrados:</strong> No hay docentes cargados. Entrá como Administrador para registrar el primero.';
+                return;
+            }
+            const items = profesores.slice(0, 5).map(p =>
+                `<li><strong>${store.escaparHtml(p.dni)}</strong> — ${store.escaparHtml(p.nombre)} (${store.escaparHtml(p.especialidad)})</li>`
+            ).join('');
+            cont.innerHTML = `<strong>Docentes registrados (clave inicial = DNI):</strong><ul>${items}</ul>`;
+        }
+
+        document.getElementById('btn-acceso-admin').addEventListener('click', () => {
+            store.entrarComoAdmin();
+        });
+
+        // LOGIN DOCENTE
+        const formLogin = document.getElementById('formulario-login');
+        formLogin.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const dni = document.getElementById('dni').value.trim();
+            const contrasenia = document.getElementById('contrasenia').value;
+            const erroresDiv = document.getElementById('login-errores');
+            erroresDiv.innerHTML = '';
+
+            const res = store.loginConDni(dni, contrasenia);
+            if (!res.ok) {
+                erroresDiv.innerHTML = `
+                    <div class="alerta-error">
+                        <i data-lucide="alert-circle"></i>
+                        <span>${store.escaparHtml(res.error)}</span>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            if (res.requiere_cambio_clave) {
+                dniPendienteCambio = res.profesor.dni;
+                document.getElementById('subtitulo-primer-ingreso').textContent =
+                    `Hola ${res.profesor.nombre}, al ser tu primer ingreso debés crear tu contraseña.`;
+                document.getElementById('bloque-login').style.display = 'none';
+                document.getElementById('bloque-cambio-clave').style.display = 'block';
+                lucide.createIcons();
+            } else {
+                window.location.href = 'panel.html';
+            }
+        });
+
+        // PRIMER INGRESO: CAMBIO DE CLAVE
+        const formCambio = document.getElementById('formulario-cambio-clave');
+        formCambio.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nuevaClave = document.getElementById('nueva-clave').value;
+            const repetirClave = document.getElementById('repetir-clave').value;
+            const erroresDiv = document.getElementById('cambio-errores');
+            erroresDiv.innerHTML = '';
+
+            if (nuevaClave.length < 6) {
+                erroresDiv.innerHTML = `
+                    <div class="alerta-error">
+                        <i data-lucide="alert-circle"></i>
+                        <span>La contraseña debe tener al menos 6 caracteres.</span>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            if (nuevaClave !== repetirClave) {
+                erroresDiv.innerHTML = `
+                    <div class="alerta-error">
+                        <i data-lucide="alert-circle"></i>
+                        <span>Las contraseñas no coinciden.</span>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            const res = store.updatePassword(dniPendienteCambio, nuevaClave);
+            if (!res.ok) {
+                erroresDiv.innerHTML = `
+                    <div class="alerta-error">
+                        <i data-lucide="alert-circle"></i>
+                        <span>${store.escaparHtml(res.error)}</span>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            window.location.href = 'panel.html';
+        });
+
+        renderizarListaDnisRegistrados();
+        lucide.createIcons();
+    </script>
+
+</body>
+</html>

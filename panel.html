@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Gestión - BiblioTec</title>
+    <link rel="stylesheet" href="assets/css/estilos.css">
+    <link rel="stylesheet" href="assets/css/docentes.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Layout limpio del panel sin conflictos con Tailwind */
+        .panel-main {
+            flex-grow: 1;
+            padding: 24px 20px 96px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Botones de cabecera */
+        .btn-switch-rol {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background-color 0.15s ease, transform 0.15s ease;
+            font-family: inherit;
+        }
+        .btn-switch-rol:hover { transform: translateY(-1px); }
+        .btn-switch-rol.a-docente {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #059669;
+        }
+        .btn-switch-rol.a-docente:hover { background: #059669; }
+        .btn-switch-rol.a-admin {
+            background: #4f46e5;
+            color: #ffffff;
+            border-color: #4338ca;
+        }
+        .btn-switch-rol.a-admin:hover { background: #4338ca; }
+
+        .boton-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            cursor: pointer;
+            font-family: inherit;
+            transition: background-color 0.15s ease;
+        }
+        .boton-logout:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+        .btn-switch-rol i,
+        .boton-logout i,
+        .enlace-nav i {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Hero compacto superior con métricas integradas */
+        .panel-hero {
+            background: #ffffff;
+            border: 1px solid var(--color-borde);
+            border-radius: 14px;
+            padding: 20px 24px;
+            box-shadow: var(--sombra-suave);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+        .panel-hero-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 660px;
+        }
+        .badge-rol {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 11px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .badge-rol.admin {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        .badge-rol.docente {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .panel-saludo-titulo {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+        .panel-subtitulo {
+            font-size: 0.88rem;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .panel-metricas-inline {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .metrica-pill {
+            background: #f8fafc;
+            border: 1px solid var(--color-borde);
+            border-radius: 10px;
+            padding: 10px 16px;
+            min-width: 130px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .metrica-pill-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.04em;
+        }
+        .metrica-pill-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.15;
+        }
+        .metrica-pill-value.accent-indigo { color: #4f46e5; }
+        .metrica-pill-value.accent-emerald { color: #059669; }
+
+        /* Barra de pestañas */
+        .panel-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--color-borde);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .panel-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 9px;
+            border: 1px solid var(--color-borde);
+            background: #ffffff;
+            color: #475569;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+        .panel-tab-btn i { width: 16px; height: 16px; }
+        .panel-tab-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .panel-tab-btn.activo {
+            background: var(--color-primario);
+            border-color: var(--color-primario);
+            color: #ffffff;
+        }
+
+        /* Grilla balanceada sin márgenes duplicados */
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (min-width: 980px) {
+            .panel-grid {
+                grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr);
+            }
+        }
+
+        .panel-card {
+            background: #ffffff;
+            border: 1px solid var(--color-borde);
+            border-radius: 14px;
+            padding: 20px 22px;
+            box-shadow: var(--sombra-suave);
+        }
+        .panel-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--color-borde);
+        }
+        .panel-card-title {
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-card-title i {
+            width: 18px;
+            height: 18px;
+            color: var(--color-primario);
+        }
+
+        /* Formularios compactos */
+        .panel-card .grupo-formulario {
+            margin-bottom: 14px;
+            gap: 6px;
+        }
+        .panel-card .grupo-formulario label {
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: #334155;
+        }
+        .panel-card .input-control {
+            padding: 10px 12px;
+            font-size: 0.88rem;
+            font-family: inherit;
+        }
+        .fila-doble-input {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 520px) {
+            .fila-doble-input { grid-template-columns: 1fr; }
+        }
+        .texto-ayuda {
+            font-size: 0.76rem;
+            color: #64748b;
+            line-height: 1.35;
+        }
+
+        /* Tablas limpias */
+        .tabla-archivos th {
+            padding: 11px 12px;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .tabla-archivos td {
+            padding: 12px;
+            font-size: 0.88rem;
+            vertical-align: middle;
+        }
+        .celda-vacia {
+            text-align: center;
+            padding: 28px 16px !important;
+            color: #64748b;
+            font-style: italic;
+        }
+        .celda-acciones-flex {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .badge-estado-clave {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .badge-estado-clave.pendiente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-estado-clave.activa {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .btn-usar-docente {
+            padding: 6px 10px;
+            border-radius: 7px;
+            border: 1px solid #a7f3d0;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            transition: background-color 0.15s ease;
+        }
+        .btn-usar-docente:hover { background: #d1fae5; }
+
+        .btn-icono-borrar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 7px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #ef4444;
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        .btn-icono-borrar:hover {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+        .btn-icono-borrar i { width: 16px; height: 16px; }
+
+        /* Card centrada para Seguridad */
+        .panel-seguridad-wrap {
+            max-width: 520px;
+            width: 100%;
+        }
+
+        /* Notificación */
+        #notificacion-panel:empty { display: none; }
+        #notificacion-panel .alerta-notif { margin-bottom: 0; }
+
+        /* Modal oculto por defecto y centrado al activarse */
+        .modal-superposicion {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-superposicion.activo {
+            display: flex;
+        }
+        .modal-caja {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 26px 24px;
+            width: 100%;
+            max-width: 390px;
+            text-align: center;
+            box-shadow: 0 24px 50px rgba(15, 23, 42, 0.28);
+            border: 1px solid var(--color-borde);
+        }
+        .modal-icono-alerta {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+        .modal-titulo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        .modal-desc {
+            font-size: 0.88rem;
+            color: #475569;
+            margin-bottom: 20px;
+            line-height: 1.45;
+        }
+        .modal-acciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .modal-btn {
+            padding: 10px 14px;
+            border-radius: 9px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .modal-btn.cancelar {
+            background: #f1f5f9;
+            color: #334155;
+        }
+        .modal-btn.cancelar:hover { background: #e2e8f0; }
+        .modal-btn.eliminar {
+            background: #dc2626;
+            color: #ffffff;
+        }
+        .modal-btn.eliminar:hover { background: #b91c1c; }
+
+        .oculto-rol {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabecera Principal -->
+    <header class="cabecera">
+        <div class="contenedor cabecera-flex">
+            <div class="logo-seccion" style="cursor: pointer;" onclick="window.location.href='index.html'">
+                <img src="assets/img/logo.jpg" alt="Logo de la Técnica 5" class="logo-imagen" onerror="this.style.display='none'">
+                <div>
+                    <h1 class="logo-titulo">BiblioTec</h1>
+                    <span class="logo-subtitulo">E.E.S.T. N° 5 • Berazategui</span>
+                </div>
+            </div>
+            <nav class="navegacion" style="gap: 10px; flex-wrap: wrap;">
+                <button id="btn-cambiar-rol-header" class="btn-switch-rol a-admin" type="button">
+                    <i data-lucide="repeat"></i>
+                    <span id="texto-cambiar-rol-header">Cambiar a Administrador</span>
+                </button>
+                <a href="index.html" class="enlace-nav">
+                    <i data-lucide="book-open"></i> Biblioteca Pública
+                </a>
+                <button id="btn-cerrar-sesion" class="boton-logout" type="button">
+                    <i data-lucide="log-out"></i> Salir
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <main class="contenedor panel-main">
+
+        <!-- Hero compacto + Métricas integradas -->
+        <section class="panel-hero">
+            <div class="panel-hero-info">
+                <span id="badge-rol-panel" class="badge-rol docente">Sesión de Docente Activa</span>
+                <h2 class="panel-saludo-titulo" id="saludo-profe-nombre">Panel de Gestión</h2>
+                <p class="panel-subtitulo" id="subtitulo-panel">Administrá y publicá materiales directamente en la biblioteca virtual.</p>
+            </div>
+
+            <div class="panel-metricas-inline">
+                <div class="metrica-pill">
+                    <span class="metrica-pill-label" id="etiqueta-metrica-1">Tus Publicaciones</span>
+                    <span class="metrica-pill-value accent-emerald" id="valor-metrica-1">0</span>
+                </div>
+                <div class="metrica-pill">
+                    <span class="metrica-pill-label">Docentes</span>
+                    <span class="metrica-pill-value accent-indigo" id="valor-metrica-2">0</span>
+                </div>
+            </div>
+        </section>
+
+        <div id="notificacion-panel"></div>
+
+        <!-- Pestañas limpias para evitar scroll infinito y espacios vacíos -->
+        <div class="panel-tabs" id="panel-tabs">
+            <button type="button" class="panel-tab-btn oculto-rol" id="tab-btn-docentes" data-tab="docentes">
+                <i data-lucide="users"></i> Gestión de Docentes
+            </button>
+            <button type="button" class="panel-tab-btn activo" id="tab-btn-publicaciones" data-tab="publicaciones">
+                <i data-lucide="folder-open"></i> <span id="tab-label-publicaciones">Tus Publicaciones</span>
+            </button>
+            <button type="button" class="panel-tab-btn oculto-rol" id="tab-btn-seguridad" data-tab="seguridad">
+                <i data-lucide="lock"></i> Seguridad de la Cuenta
+            </button>
+        </div>
+
+        <!-- VISTA 1 (ADMIN): Gestión de Docentes -->
+        <section id="vista-docentes" class="panel-grid oculto-rol">
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3 class="panel-card-title">
+                        <i data-lucide="user-check"></i> Docentes Registrados
+                    </h3>
+                    <span class="texto-ayuda">Habilitados para ingresar con su DNI</span>
+                </div>
+
+                <div class="tabla-contenedor">
+                    <table class="tabla-archivos">
+                        <thead>
+                            <tr>
+                                <th>Docente</th>
+                                <th>DNI</th>
+                                <th>Especialidad</th>
+                                <th>Clave</th>
+                                <th class="celda-acciones">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-docentes-registrados"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3 class="panel-card-title">
+                        <i data-lucide="user-plus"></i> Registrar Nuevo Docente
+                    </h3>
+                </div>
+                <form id="formulario-alta-docente">
+                    <div class="grupo-formulario">
+                        <label for="docente-nombre">Nombre y Apellido</label>
+                        <input type="text" id="docente-nombre" required placeholder="Ej: Prof. Sofía Martínez" class="input-control">
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="docente-dni">Número de DNI</label>
+                        <input type="number" id="docente-dni" required placeholder="Ej: 39456789" class="input-control">
+                        <p class="texto-ayuda">La contraseña inicial será su DNI. En el primer ingreso deberá cambiarla.</p>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="docente-especialidad">Especialidad</label>
+                        <select id="docente-especialidad" required class="input-control">
+                            <option value="Programación">Programación</option>
+                            <option value="Informática">Informática</option>
+                            <option value="Maestro Mayor de Obra">Maestro Mayor de Obra</option>
+                            <option value="Ciclo Superior">Ciclo Superior</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="boton-accion" style="background: #4f46e5;">
+                        <i data-lucide="user-plus"></i> Registrar Docente
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VISTA 2 (ADMIN Y DOCENTE): Publicaciones + Nueva Publicación -->
+        <section id="vista-publicaciones" class="panel-grid">
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3 class="panel-card-title" id="titulo-tabla-archivos">
+                        <i data-lucide="folder-open"></i> Tus Publicaciones
+                    </h3>
+                    <div class="buscador-panel-contenedor">
+                        <i data-lucide="search" class="icono-buscar-panel"></i>
+                        <input type="text" id="buscar-mis-archivos" placeholder="Filtrar publicaciones..." class="input-control input-buscar">
+                    </div>
+                </div>
+
+                <div class="tabla-contenedor">
+                    <table class="tabla-archivos">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th id="col-autor-header" class="oculto-rol">Docente</th>
+                                <th>Curso</th>
+                                <th>Formato</th>
+                                <th class="celda-acciones">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-mis-archivos">
+                            <tr>
+                                <td colspan="5" class="celda-vacia">Cargando publicaciones...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3 class="panel-card-title">
+                        <i data-lucide="upload-cloud"></i> Nueva Publicación
+                    </h3>
+                </div>
+                <form id="formulario-subida">
+                    <div class="grupo-formulario">
+                        <label for="titulo">Título del Documento</label>
+                        <input type="text" id="titulo" required placeholder="Ej: Trabajo Práctico de Base de Datos" class="input-control">
+                    </div>
+
+                    <div class="fila-doble-input">
+                        <div class="grupo-formulario">
+                            <label for="anio">Año Escolar</label>
+                            <select id="anio" required class="input-control">
+                                <option value="4">4° Año</option>
+                                <option value="5">5° Año</option>
+                                <option value="6">6° Año</option>
+                                <option value="7">7° Año</option>
+                            </select>
+                        </div>
+                        <div class="grupo-formulario">
+                            <label for="division">División / Especialidad</label>
+                            <select id="division" required class="input-control">
+                                <option value="1">1° (Informática)</option>
+                                <option value="2">2° (Programación)</option>
+                                <option value="3">3° (Maestro Mayor)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="url-archivo">Enlace al Archivo (opcional)</label>
+                        <input type="text" id="url-archivo" placeholder="https://drive.google.com/file/..." class="input-control">
+                        <p class="texto-ayuda">Pegá un enlace de Drive/OneDrive o dejalo vacío para generar una ficha descargable.</p>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="tipo">Formato del Archivo</label>
+                        <select id="tipo" required class="input-control">
+                            <option value="pdf">Documento PDF</option>
+                            <option value="zip">Comprimido ZIP/RAR</option>
+                            <option value="dwg">Plano CAD/DWG</option>
+                            <option value="mp4">Video MP4</option>
+                            <option value="exe">Ejecutable EXE</option>
+                            <option value="txt">Texto Plano</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="boton-accion">
+                        <i data-lucide="upload"></i> Publicar Documento
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VISTA 3 (DOCENTE): Seguridad de la Cuenta -->
+        <section id="vista-seguridad" class="panel-seguridad-wrap oculto-rol">
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h3 class="panel-card-title">
+                        <i data-lucide="lock"></i> Seguridad de la Cuenta
+                    </h3>
+                </div>
+                <form id="formulario-contrasenia">
+                    <div class="grupo-formulario">
+                        <label for="nueva_pass">Nueva Contraseña</label>
+                        <input type="password" id="nueva_pass" required placeholder="Mínimo 6 caracteres" class="input-control">
+                    </div>
+                    <div class="grupo-formulario">
+                        <label for="confirmar_pass">Reingresar Contraseña</label>
+                        <input type="password" id="confirmar_pass" required placeholder="Repetir exactamente" class="input-control">
+                    </div>
+                    <button type="submit" class="boton-accion">
+                        <i data-lucide="check"></i> Guardar Nueva Contraseña
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="pie-pagina">
+        <div class="contenedor pie-flex">
+            <div class="pie-institucion">
+                <p class="pie-nombre">E.E.S.T. N° 5 de Berazategui</p>
+                <p class="pie-subtexto">BiblioTec — Panel de Gestión Institucional</p>
+            </div>
+            <div class="pie-enlaces">
+                <a href="index.html">Biblioteca Pública</a>
+                <span class="separador">|</span>
+                <span class="pie-version">Sincronización Activa</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Confirmación para Borrado (oculto por defecto) -->
+    <div id="modal-confirmacion" class="modal-superposicion">
+        <div class="modal-caja">
+            <div class="modal-icono-alerta">
+                <i data-lucide="alert-triangle"></i>
+            </div>
+            <h3 class="modal-titulo">¿Confirmar Eliminación?</h3>
+            <p class="modal-desc" id="modal-texto-confirmacion">Esta acción quitará el apunte permanentemente de la biblioteca virtual.</p>
+            <div class="modal-acciones">
+                <button type="button" onclick="cerrarModal()" class="modal-btn cancelar">Cancelar</button>
+                <button type="button" id="btn-eliminar-confirmar" class="modal-btn eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/bibliotec-store.js"></script>
+    <script>
+        const store = window.BiblioTecStore;
+        let sesionActual = store.getSesion();
+
+        if (!sesionActual || (sesionActual.rol !== 'admin' && sesionActual.rol !== 'docente')) {
+            sesionActual = store.setSesion({
+                rol: 'admin',
+                dni: 'admin',
+                nombre: 'Administrador E.E.S.T. N° 5',
+                especialidad: 'Dirección / Administración'
+            });
+        }
+
+        let accionPendienteEliminar = null;
+        let tabActiva = sesionActual.rol === 'admin' ? 'docentes' : 'publicaciones';
+
+        function activarTab(nombreTab) {
+            tabActiva = nombreTab;
+            const vistas = {
+                docentes: document.getElementById('vista-docentes'),
+                publicaciones: document.getElementById('vista-publicaciones'),
+                seguridad: document.getElementById('vista-seguridad')
+            };
+            const botones = {
+                docentes: document.getElementById('tab-btn-docentes'),
+                publicaciones: document.getElementById('tab-btn-publicaciones'),
+                seguridad: document.getElementById('tab-btn-seguridad')
+            };
+
+            Object.keys(vistas).forEach(k => {
+                if (k === nombreTab) {
+                    vistas[k].classList.remove('oculto-rol');
+                    botones[k].classList.add('activo');
+                } else {
+                    vistas[k].classList.add('oculto-rol');
+                    botones[k].classList.remove('activo');
+                }
+            });
+            lucide.createIcons();
+        }
+
+        document.querySelectorAll('.panel-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                activarTab(btn.getAttribute('data-tab'));
+            });
+        });
+
+        function aplicarVistaSegunRol() {
+            const esAdmin = sesionActual.rol === 'admin';
+            const badge = document.getElementById('badge-rol-panel');
+            const saludo = document.getElementById('saludo-profe-nombre');
+            const subtitulo = document.getElementById('subtitulo-panel');
+            const btnRolHeader = document.getElementById('btn-cambiar-rol-header');
+            const textoRolHeader = document.getElementById('texto-cambiar-rol-header');
+            const colAutorHeader = document.getElementById('col-autor-header');
+            const tituloTablaArchivos = document.getElementById('titulo-tabla-archivos');
+            const etiquetaMetrica1 = document.getElementById('etiqueta-metrica-1');
+            const tabDocentes = document.getElementById('tab-btn-docentes');
+            const tabSeguridad = document.getElementById('tab-btn-seguridad');
+            const tabLabelPubs = document.getElementById('tab-label-publicaciones');
+
+            if (esAdmin) {
+                badge.textContent = 'Modo Administrador Activo';
+                badge.className = 'badge-rol admin';
+                saludo.textContent = 'Panel de Administración — BiblioTec';
+                subtitulo.textContent = 'Registrá nuevos docentes (usuarios) para habilitar su acceso con DNI y moderá las publicaciones de la escuela.';
+                btnRolHeader.className = 'btn-switch-rol a-docente';
+                textoRolHeader.textContent = 'Cambiar a Usuario (Docente)';
+                colAutorHeader.classList.remove('oculto-rol');
+                tituloTablaArchivos.innerHTML = '<i data-lucide="folder-open"></i> Todas las Publicaciones';
+                etiquetaMetrica1.textContent = 'Publicaciones Totales';
+                tabDocentes.classList.remove('oculto-rol');
+                tabSeguridad.classList.add('oculto-rol');
+                tabLabelPubs.textContent = 'Todas las Publicaciones';
+                activarTab('docentes');
+            } else {
+                badge.textContent = 'Sesión de Docente (Usuario) Activa';
+                badge.className = 'badge-rol docente';
+                saludo.textContent = `¡Hola, ${sesionActual.nombre}!`;
+                subtitulo.textContent = `DNI ${sesionActual.dni} • Especialidad: ${sesionActual.especialidad || 'Ciclo Superior'}. Publicá tus apuntes directamente en la biblioteca.`;
+                btnRolHeader.className = 'btn-switch-rol a-admin';
+                textoRolHeader.textContent = 'Cambiar a Administrador';
+                colAutorHeader.classList.add('oculto-rol');
+                tituloTablaArchivos.innerHTML = '<i data-lucide="folder-open"></i> Tus Publicaciones';
+                etiquetaMetrica1.textContent = 'Tus Publicaciones';
+                tabDocentes.classList.add('oculto-rol');
+                tabSeguridad.classList.remove('oculto-rol');
+                tabLabelPubs.textContent = 'Tus Publicaciones';
+                activarTab('publicaciones');
+            }
+
+            renderizarDocentes();
+            renderizarArchivos();
+            lucide.createIcons();
+        }
+
+        function renderizarDocentes() {
+            const profesores = store.getProfesores();
+            document.getElementById('valor-metrica-2').textContent = profesores.length;
+
+            if (sesionActual.rol !== 'admin') return;
+
+            const tbody = document.getElementById('tabla-docentes-registrados');
+            tbody.innerHTML = '';
+
+            if (profesores.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">No hay docentes registrados todavía. Usá el formulario de la derecha para dar de alta al primero.</td></tr>';
+                return;
+            }
+
+            profesores.forEach(prof => {
+                const tr = document.createElement('tr');
+                const estadoClave = prof.requiere_cambio_clave
+                    ? '<span class="badge-estado-clave pendiente">Inicial (DNI)</span>'
+                    : '<span class="badge-estado-clave activa">Personalizada</span>';
+
+                tr.innerHTML = `
+                    <td class="celda-titulo">${store.escaparHtml(prof.nombre)}</td>
+                    <td style="font-family: monospace; color: #475569;">${store.escaparHtml(prof.dni)}</td>
+                    <td><span class="tarjeta-curso-badge">${store.escaparHtml(prof.especialidad)}</span></td>
+                    <td>${estadoClave}</td>
+                    <td class="celda-acciones">
+                        <div class="celda-acciones-flex">
+                            <button type="button" class="btn-usar-docente" data-dni="${store.escaparHtml(prof.dni)}">
+                                Usar cuenta
+                            </button>
+                            <button type="button" class="btn-icono-borrar btn-eliminar-docente" data-dni="${store.escaparHtml(prof.dni)}" title="Eliminar docente">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.btn-usar-docente').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    store.entrarComoDocente(e.currentTarget.getAttribute('data-dni'));
+                });
+            });
+
+            document.querySelectorAll('.btn-eliminar-docente').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const dni = e.currentTarget.getAttribute('data-dni');
+                    accionPendienteEliminar = { tipo: 'docente', id: dni };
+                    document.getElementById('modal-texto-confirmacion').textContent =
+                        `¿Deseás eliminar al docente con DNI ${dni}? Ya no podrá iniciar sesión en BiblioTec.`;
+                    document.getElementById('modal-confirmacion').classList.add('activo');
+                });
+            });
+
+            lucide.createIcons();
+        }
+
+        function obtenerArchivosVisibles() {
+            const todos = store.getArchivos();
+            if (sesionActual.rol === 'admin') return todos;
+            return todos.filter(a =>
+                String(a.autor_dni || '') === String(sesionActual.dni) ||
+                String(a.nombre_profesor || '').toLowerCase() === String(sesionActual.nombre || '').toLowerCase()
+            );
+        }
+
+        function renderizarArchivos(filtroTexto = '') {
+            const esAdmin = sesionActual.rol === 'admin';
+            const base = obtenerArchivosVisibles();
+            document.getElementById('valor-metrica-1').textContent = base.length;
+
+            const query = filtroTexto.toLowerCase().trim();
+            const lista = query
+                ? base.filter(a =>
+                    (a.titulo || '').toLowerCase().includes(query) ||
+                    (a.nombre_profesor || '').toLowerCase().includes(query)
+                )
+                : base;
+
+            const tbody = document.getElementById('tabla-mis-archivos');
+            tbody.innerHTML = '';
+
+            if (lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${esAdmin ? 5 : 4}" class="celda-vacia">${query ? 'No se encontraron coincidencias.' : 'Todavía no tenés publicaciones cargadas. Usá el formulario de la derecha para subir la primera.'}</td></tr>`;
+                return;
+            }
+
+            lista.forEach(archivo => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="celda-titulo">${store.escaparHtml(archivo.titulo)}</td>
+                    ${esAdmin ? `<td style="color: #475569;">${store.escaparHtml(archivo.nombre_profesor)}</td>` : ''}
+                    <td><span class="tarjeta-curso-badge">${archivo.anio}° ${archivo.division}°</span></td>
+                    <td><span class="badge-sincronizacion">${store.escaparHtml((archivo.tipo_archivo || 'pdf').toUpperCase())}</span></td>
+                    <td class="celda-acciones">
+                        <div class="celda-acciones-flex">
+                            <button type="button" class="btn-icono-borrar btn-eliminar-archivo" data-id="${store.escaparHtml(archivo.id)}" title="Eliminar publicación">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.btn-eliminar-archivo').forEach(boton => {
+                boton.addEventListener('click', (e) => {
+                    accionPendienteEliminar = { tipo: 'archivo', id: e.currentTarget.getAttribute('data-id') };
+                    document.getElementById('modal-texto-confirmacion').textContent =
+                        'Esta acción quitará el apunte permanentemente de la biblioteca virtual de forma inmediata.';
+                    document.getElementById('modal-confirmacion').classList.add('activo');
+                });
+            });
+
+            lucide.createIcons();
+        }
+
+        document.getElementById('btn-cambiar-rol-header').addEventListener('click', () => {
+            if (sesionActual.rol === 'admin') {
+                store.entrarComoDocente();
+            } else {
+                store.entrarComoAdmin();
+            }
+        });
+
+        document.getElementById('formulario-alta-docente').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('docente-nombre').value.trim();
+            const dni = document.getElementById('docente-dni').value.trim();
+            const especialidad = document.getElementById('docente-especialidad').value;
+
+            const res = store.addProfesor({ nombre, dni, especialidad });
+            if (!res.ok) {
+                lanzarNotificacion('Error al registrar', res.error, 'error');
+                return;
+            }
+
+            e.target.reset();
+            renderizarDocentes();
+            const switcher = document.getElementById('bibliotec-role-switcher');
+            if (switcher) switcher.remove();
+            store.inyectarSelectorDeRol();
+
+            lanzarNotificacion(
+                'Docente registrado',
+                `${res.profesor.nombre} (DNI ${res.profesor.dni}) ya puede iniciar sesión con su DNI como contraseña inicial o podés entrar con "Usar cuenta".`,
+                'exito'
+            );
+        });
+
+        document.getElementById('formulario-subida').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const titulo = document.getElementById('titulo').value.trim();
+            const anio = document.getElementById('anio').value;
+            const division = document.getElementById('division').value;
+            const url = document.getElementById('url-archivo').value.trim();
+            const tipo = document.getElementById('tipo').value;
+
+            if (!titulo) return;
+
+            store.addArchivo({
+                titulo,
+                anio,
+                division,
+                ruta_archivo: url || ('#demo-' + Date.now()),
+                tipo_archivo: tipo,
+                nombre_profesor: sesionActual.nombre,
+                autor_dni: sesionActual.dni,
+                descripcion: `Publicado por ${sesionActual.nombre} para ${anio}° ${division}° desde BiblioTec.`
+            });
+
+            e.target.reset();
+            renderizarArchivos(document.getElementById('buscar-mis-archivos').value);
+            lanzarNotificacion('Publicación exitosa', 'El documento ya se encuentra visible en la Biblioteca Pública.', 'exito');
+        });
+
+        document.getElementById('formulario-contrasenia').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nueva = document.getElementById('nueva_pass').value;
+            const confirmar = document.getElementById('confirmar_pass').value;
+
+            if (nueva.length < 6) {
+                lanzarNotificacion('Error', 'La contraseña debe poseer al menos 6 caracteres.', 'error');
+                return;
+            }
+            if (nueva !== confirmar) {
+                lanzarNotificacion('Error', 'Las contraseñas no coinciden.', 'error');
+                return;
+            }
+
+            const res = store.updatePassword(sesionActual.dni, nueva);
+            if (!res.ok) {
+                lanzarNotificacion('Error', res.error, 'error');
+                return;
+            }
+            e.target.reset();
+            lanzarNotificacion('Contraseña actualizada', 'Tu nueva contraseña quedó guardada correctamente.', 'exito');
+        });
+
+        document.getElementById('btn-eliminar-confirmar').addEventListener('click', () => {
+            if (!accionPendienteEliminar) return;
+
+            if (accionPendienteEliminar.tipo === 'archivo') {
+                store.deleteArchivo(accionPendienteEliminar.id);
+                renderizarArchivos(document.getElementById('buscar-mis-archivos').value);
+                lanzarNotificacion('Eliminado', 'La publicación fue removida de la biblioteca.', 'exito');
+            } else if (accionPendienteEliminar.tipo === 'docente') {
+                store.deleteProfesor(accionPendienteEliminar.id);
+                renderizarDocentes();
+                const switcher = document.getElementById('bibliotec-role-switcher');
+                if (switcher) switcher.remove();
+                store.inyectarSelectorDeRol();
+                lanzarNotificacion('Docente eliminado', 'El docente fue dado de baja del sistema.', 'exito');
+            }
+            cerrarModal();
+        });
+
+        document.getElementById('buscar-mis-archivos').addEventListener('input', (e) => {
+            renderizarArchivos(e.target.value);
+        });
+
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', () => {
+            store.cerrarSesion();
+            window.location.href = 'index.html';
+        });
+
+        window.cerrarModal = function () {
+            document.getElementById('modal-confirmacion').classList.remove('activo');
+            accionPendienteEliminar = null;
+        };
+
+        function lanzarNotificacion(titulo, mensaje, tipo) {
+            const container = document.getElementById('notificacion-panel');
+            const alertClass = tipo === 'exito' ? 'notif-exito' : 'notif-error';
+            const icon = tipo === 'exito' ? 'check-circle' : 'alert-triangle';
+
+            container.innerHTML = `
+                <div class="alerta-notif ${alertClass}">
+                    <i data-lucide="${icon}" style="width:20px; height:20px; flex-shrink:0;"></i>
+                    <div>
+                        <strong style="display:block; font-size:0.88rem;">${store.escaparHtml(titulo)}</strong>
+                        <span style="font-size:0.8rem;">${store.escaparHtml(mensaje)}</span>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+            setTimeout(() => { container.innerHTML = ''; }, 5000);
+        }
+
+        aplicarVistaSegunRol();
+    </script>
+</body>
+</html>
