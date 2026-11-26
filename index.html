@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facundo Torres | Portfolio Temporal — Futuro Programador</title>
+  <meta name="description" content="Portfolio interactivo de Facundo Torres, futuro programador. Un viaje a través de las épocas de la Tierra desde el Big Bang hasta la Era Digital." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-era="0">
+  <!-- Cursor personalizado -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- Canvas de fondo atmosférico por era -->
+  <canvas id="era-canvas" aria-hidden="true"></canvas>
+
+  <!-- Capa de viñeta y atmósfera -->
+  <div class="atmosphere-overlay" aria-hidden="true"></div>
+
+  <!-- Canvas del Portal del Tiempo (transiciones) -->
+  <div class="portal-overlay" id="portal-overlay" aria-hidden="true">
+    <canvas id="portal-canvas"></canvas>
+    <div class="portal-hud">
+      <div class="portal-label">ATRAVESANDO PORTAL TEMPORAL</div>
+      <div class="portal-year" id="portal-year">-13.800.000.000</div>
+      <div class="portal-destination" id="portal-destination">ERA PRIMORDIAL</div>
+    </div>
+    <div class="portal-flash" id="portal-flash"></div>
+  </div>
+
+  <!-- Barra superior HUD -->
+  <header class="top-hud">
+    <div class="brand" id="brand-home" title="Volver al Big Bang">
+      <span class="brand-orb"></span>
+      <span class="brand-text">FACUNDO<strong>.DEV</strong></span>
+    </div>
+
+    <div class="era-indicator">
+      <span class="era-badge" id="hud-era-badge">ERA 01 / 06</span>
+      <span class="era-year-display" id="hud-era-year">13.8B A.C.</span>
+    </div>
+
+    <div class="hud-actions">
+      <button class="icon-btn" id="sound-toggle" title="Activar/Desactivar sonido del portal" aria-label="Sonido">
+        <svg id="sound-icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+        <svg id="sound-icon-on" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor principal de las 6 eras -->
+  <main class="timeline-stage" id="timeline-stage">
+
+    <!-- ==================== ERA 0: BIG BANG (INICIO) ==================== -->
+    <section class="era-section active" data-era-index="0" data-era-name="El Big Bang" data-era-year="13.800M A.C." data-numeric-year="-13800000000">
+      <div class="era-content hero-layout">
+        <div class="evanesce-item delay-1">
+          <span class="pill-tag cosmic-tag">✦ ORIGEN DEL UNIVERSO • SINGULARIDAD INICIAL</span>
+        </div>
+
+        <h1 class="hero-title evanesce-item delay-2">
+          <span class="title-small">Hola, soy</span>
+          <span class="glitch-text" data-text="Facundo Torres">Facundo Torres</span>
+        </h1>
+
+        <p class="hero-subtitle evanesce-item delay-3">
+          <span class="typing-text" id="typing-text">Futuro Programador &amp; Creador de Mundos Digitales</span><span class="typing-cursor">|</span>
+        </p>
+
+        <p class="hero-desc evanesce-item delay-4">
+          Todo gran código comienza con una chispa. Te invito a viajar por la historia del planeta Tierra —desde el Big Bang hasta la Era Digital— para descubrir quién soy, mis habilidades y los proyectos que construyo.
+        </p>
+
+        <div class="cta-group evanesce-item delay-5">
+          <button class="portal-btn primary-portal-btn" data-go-era="1">
+            <span class="btn-ring"></span>
+            <span class="btn-text">Abrir Portal del Tiempo</span>
+            <span class="btn-arrow">→</span>
+          </button>
+          <button class="ghost-btn" data-go-era="5">Ir directo a Contacto</button>
+        </div>
+
+        <div class="scroll-hint evanesce-item delay-6">
+          <span>Usa los botones, la línea temporal o las flechas ← → para viajar</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ERA 1: TIERRA PRIMORDIAL (SOBRE MÍ) ==================== -->
+    <section class="era-section" data-era-index="1" data-era-name="Tierra Primordial" data-era-year="4.500M A.C." data-numeric-year="-4500000000">
+      <div class="era-content two-col-layout">
+        <div class="col-text">
+          <span class="pill-tag volcanic-tag evanesce-item delay-1">🔥 EÓN HADEICO • FORJANDO LOS CIMIENTOS</span>
+          <h2 class="section-title evanesce-item delay-2">Sobre Mí</h2>
+          <p class="lead-text evanesce-item delay-3">
+            Al igual que la Tierra se forjó entre fuego, presión y transformación constante, mi camino como <strong>futuro programador</strong> nace de la curiosidad incansable por entender cómo funciona la tecnología y crear soluciones reales.
+          </p>
+          <p class="body-text evanesce-item delay-4">
+            Me apasiona el desarrollo web, la lógica de programación y el diseño de experiencias interactivas que sorprendan al usuario. Cada día entreno mis habilidades escribiendo código limpio, resolviendo problemas y aprendiendo nuevas herramientas.
+          </p>
+
+          <div class="stats-row evanesce-item delay-5">
+            <div class="stat-card tilt-card">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Pasión por el Código</span>
+            </div>
+            <div class="stat-card tilt-card">
+              <span class="stat-number">∞</span>
+              <span class="stat-label">Ganas de Aprender</span>
+            </div>
+            <div class="stat-card tilt-card">
+              <span class="stat-number">24/7</span>
+              <span class="stat-label">Mentalidad Builder</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-visual evanesce-item delay-4">
+          <div class="magma-card tilt-card">
+            <div class="magma-core portrait-core">
+              <div class="orbit-ring r1"></div>
+              <div class="orbit-ring r2"></div>
+              <img src="facundo.png" alt="Facundo Torres" class="facundo-cutout" />
+            </div>
+            <h3>Facundo Torres</h3>
+            <p class="role-badge">Aspirante a Desarrollador Full-Stack</p>
+            <ul class="traits-list">
+              <li><span>⚡</span> Resolución creativa de problemas</li>
+              <li><span>🧠</span> Aprendizaje rápido y autodidacta</li>
+              <li><span>🎯</span> Atención al detalle y animaciones</li>
+              <li><span>🤝</span> Trabajo en equipo y comunicación</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="era-nav-footer evanesce-item delay-6">
+          <button class="ghost-btn" data-go-era="0">← Big Bang</button>
+          <button class="portal-btn volcanic-btn" data-go-era="2">
+            <span class="btn-text">Viajar al Jurásico</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ERA 2: ERA MESOZOICA / DINOSAURIOS Y FÓSILES (SKILLS) ==================== -->
+    <section class="era-section" data-era-index="2" data-era-name="Era Mesozoica" data-era-year="150M A.C." data-numeric-year="-150000000">
+      <div class="era-content jurassic-layout">
+        <!-- Silueta decorativa de dinosaurio en el fondo -->
+        <svg class="dino-silhouette" viewBox="0 0 600 320" fill="none" aria-hidden="true">
+          <path d="M510 295 C470 295 450 280 430 250 C400 210 380 185 330 185 C295 185 270 205 245 230 C235 240 225 265 220 295 L195 295 C200 255 205 225 190 210 C175 195 150 210 135 235 C120 260 110 280 105 295 L82 295 C90 250 110 210 125 185 C100 180 65 185 25 200 C55 165 100 148 145 148 C185 148 220 155 260 140 C300 125 325 90 355 55 C375 32 405 20 435 25 C460 29 478 42 485 56 C470 60 455 62 440 60 C448 68 465 72 475 74 C465 88 442 94 420 90 C400 115 390 145 405 175 C425 210 465 245 530 275 Z" fill="currentColor"/>
+        </svg>
+
+        <div class="section-header evanesce-item delay-1">
+          <span class="pill-tag jurassic-tag">🦖 ERA MESOZOICA • DINOSAURIOS &amp; FÓSILES</span>
+          <h2 class="section-title">Fósiles de Conocimiento</h2>
+          <p class="section-subtitle">Haz clic o pasa el cursor sobre cada fósil excavado para descubrir mi stack tecnológico.</p>
+        </div>
+
+        <div class="fossils-grid evanesce-item delay-3">
+          <!-- Fósil 1: Ammonite (HTML & CSS) -->
+          <article class="fossil-card tilt-card" tabindex="0">
+            <div class="fossil-icon">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M52 50 C52 44 46 42 42 46 C36 52 40 62 49 62 C61 62 68 50 64 38 C59 23 41 18 28 28 C12 40 12 64 26 78 C42 93 70 90 82 72 C92 56 88 32 74 20" stroke-linecap="round"/>
+                <path d="M52 50 L64 38 M49 62 L58 75 M28 28 L40 42 M26 78 L38 66 M82 72 L68 62" stroke-opacity="0.5"/>
+              </svg>
+            </div>
+            <span class="fossil-era">FÓSIL #01 • AMMONITE</span>
+            <h3>HTML5 &amp; CSS3</h3>
+            <p>Maquetación semántica, Flexbox, Grid, animaciones avanzadas y diseño responsive.</p>
+            <div class="skill-bar"><div class="skill-fill" style="--level: 90%"></div></div>
+          </article>
+
+          <!-- Fósil 2: Cráneo T-Rex (JavaScript) -->
+          <article class="fossil-card tilt-card" tabindex="0">
+            <div class="fossil-icon">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M18 42 C22 24 45 18 70 22 C84 25 90 36 86 48 L62 52 L60 60 L82 62 C78 74 60 80 42 76 L26 72 L18 58 Z" stroke-linejoin="round"/>
+                <circle cx="50" cy="36" r="6"/>
+                <circle cx="72" cy="36" r="4"/>
+                <path d="M62 52 L66 56 M70 51 L74 55 M78 50 L81 54 M66 62 L69 66 M74 62 L76 66" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="fossil-era">FÓSIL #02 • T-REX</span>
+            <h3>JavaScript (ES6+)</h3>
+            <p>Lógica interactiva, manipulación del DOM, Canvas 2D, consumo de APIs y asincronía.</p>
+            <div class="skill-bar"><div class="skill-fill" style="--level: 85%"></div></div>
+          </article>
+
+          <!-- Fósil 3: Trilobite (Python & Lógica) -->
+          <article class="fossil-card tilt-card" tabindex="0">
+            <div class="fossil-icon">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
+                <ellipse cx="50" cy="52" rx="28" ry="36"/>
+                <path d="M50 16 L50 88 M35 22 L35 82 M65 22 L65 82" stroke-opacity="0.6"/>
+                <path d="M24 38 L76 38 M22 50 L78 50 M24 62 L76 62 M29 74 L71 74"/>
+              </svg>
+            </div>
+            <span class="fossil-era">FÓSIL #03 • TRILOBITE</span>
+            <h3>Python &amp; Algoritmos</h3>
+            <p>Estructuras de datos, automatización, resolución de problemas y bases de backend.</p>
+            <div class="skill-bar"><div class="skill-fill" style="--level: 78%"></div></div>
+          </article>
+
+          <!-- Fósil 4: Huella Jurásica (Git, SQL & Herramientas) -->
+          <article class="fossil-card tilt-card" tabindex="0">
+            <div class="fossil-icon">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M50 86 C35 86 28 74 32 60 L20 34 C18 28 24 24 29 29 L42 46 L46 18 C47 12 53 12 54 18 L58 46 L71 29 C76 24 82 28 80 34 L68 60 C72 74 65 86 50 86 Z" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="fossil-era">FÓSIL #04 • HUELLA JURÁSICA</span>
+            <h3>Git, GitHub &amp; SQL</h3>
+            <p>Control de versiones, trabajo colaborativo, consultas de bases de datos y buenas prácticas.</p>
+            <div class="skill-bar"><div class="skill-fill" style="--level: 80%"></div></div>
+          </article>
+        </div>
+
+        <div class="era-nav-footer evanesce-item delay-5">
+          <button class="ghost-btn" data-go-era="1">← Tierra Primordial</button>
+          <button class="portal-btn jurassic-btn" data-go-era="3">
+            <span class="btn-text">Viajar a la Edad de Hielo</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ERA 3: EDAD DE HIELO (PROYECTOS) ==================== -->
+    <section class="era-section" data-era-index="3" data-era-name="Edad de Hielo" data-era-year="20.000 A.C." data-numeric-year="-20000">
+      <div class="era-content projects-layout">
+        <div class="section-header evanesce-item delay-1">
+          <span class="pill-tag ice-tag">❄️ PLEISTOCENO • CRISTALES EN EL TIEMPO</span>
+          <h2 class="section-title">Proyectos Destacados</h2>
+          <p class="section-subtitle">Creaciones esculpidas en código, preservadas con precisión y diseño moderno.</p>
+        </div>
+
+        <div class="projects-grid evanesce-item delay-3">
+          <a href="proyectos/kiosco/index.html" target="_blank" rel="noopener noreferrer" class="ice-card tilt-card project-link">
+            <div class="ice-card-top">
+              <span class="project-num">01</span>
+              <span class="project-status">Abrir Proyecto ↗</span>
+            </div>
+            <h3>Sistema de Kiosco &amp; Flyers</h3>
+            <p>Aplicación web para gestión de productos, almacenamiento local y generador visual de flyers promocionales.</p>
+            <div class="tech-pills">
+              <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Storage</span>
+            </div>
+          </a>
+
+          <a href="proyectos/bibliotec/index.html" target="_blank" rel="noopener noreferrer" class="ice-card tilt-card project-link">
+            <div class="ice-card-top">
+              <span class="project-num">02</span>
+              <span class="project-status">Abrir Proyecto ↗</span>
+            </div>
+            <h3>BiblioTec — E.E.S.T. N° 5</h3>
+            <p>Biblioteca virtual escolar por año y especialidad (Informática, Programación y MMO) con buscador, historial y panel docente/admin.</p>
+            <div class="tech-pills">
+              <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Lucide</span>
+            </div>
+          </a>
+
+          <a href="proyectos/viajes-los-choris/index.html" target="_blank" rel="noopener noreferrer" class="ice-card tilt-card project-link">
+            <div class="ice-card-top">
+              <span class="project-num">03</span>
+              <span class="project-status">Abrir Proyecto ↗</span>
+            </div>
+            <h3>Viajes Los Choris</h3>
+            <p>Plataforma de venta de pasajes, hoteles y paquetes turísticos con buscador, ofertas, carrito de compras y checkout completo.</p>
+            <div class="tech-pills">
+              <span>Tailwind CSS</span><span>JavaScript</span><span>LocalStorage</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="era-nav-footer evanesce-item delay-5">
+          <button class="ghost-btn" data-go-era="2">← Era Mesozoica</button>
+          <button class="portal-btn ice-btn" data-go-era="4">
+            <span class="btn-text">Viajar a la Era Industrial</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ERA 4: ERA INDUSTRIAL & MODERNA (EDUCACIÓN) ==================== -->
+    <section class="era-section" data-era-index="4" data-era-name="Era Industrial" data-era-year="1890 D.C." data-numeric-year="1890">
+      <div class="era-content industrial-layout">
+        <div class="section-header evanesce-item delay-1">
+          <span class="pill-tag industrial-tag">⚙️ REVOLUCIÓN DEL CONOCIMIENTO • ENGRANAJES</span>
+          <h2 class="section-title">Formación &amp; Evolución</h2>
+          <p class="section-subtitle">Cada etapa de aprendizaje es un engranaje que impulsa mi carrera como programador.</p>
+        </div>
+
+        <div class="milestones-list evanesce-item delay-3">
+          <div class="milestone-item tilt-card">
+            <div class="milestone-year">2020 - 2022</div>
+            <div class="milestone-body">
+              <h3>Escuela Técnica N° 4 de Berazategui</h3>
+              <p>Inicio de mi formación técnica, despertando el interés por la tecnología, los sistemas y la resolución de problemas.</p>
+            </div>
+          </div>
+
+          <div class="milestone-item tilt-card">
+            <div class="milestone-year">2023 - Act.</div>
+            <div class="milestone-body">
+              <h3>Escuela Técnica N° 5 de Berazategui</h3>
+              <p>Continuación y profundización de mi carrera técnica, fortaleciendo las bases de tecnología y desarrollo de proyectos.</p>
+            </div>
+          </div>
+
+          <div class="milestone-item tilt-card">
+            <div class="milestone-year">2024</div>
+            <div class="milestone-body">
+              <h3>Primeras Líneas de Código — Modalidad Programación</h3>
+              <p>Ingreso a la modalidad de Programación: descubrimiento de la lógica algorítmica, fundamentos de código y desarrollo web.</p>
+            </div>
+          </div>
+
+          <div class="milestone-item tilt-card">
+            <div class="milestone-year">2026+</div>
+            <div class="milestone-body">
+              <h3>Camino a Programador Profesional</h3>
+              <p>Desarrollo de interfaces interactivas, frameworks modernos, backend, bases de datos y proyectos reales de alto impacto.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="era-nav-footer evanesce-item delay-5">
+          <button class="ghost-btn" data-go-era="3">← Edad de Hielo</button>
+          <button class="portal-btn industrial-btn" data-go-era="5">
+            <span class="btn-text">Saltar a la Era Digital</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ERA 5: ERA DIGITAL / FUTURO (CONTACTO) ==================== -->
+    <section class="era-section" data-era-index="5" data-era-name="Era Digital" data-era-year="2026 D.C." data-numeric-year="2026">
+      <div class="era-content contact-layout">
+        <div class="col-text">
+          <span class="pill-tag cyber-tag evanesce-item delay-1">🌐 ERA DIGITAL • EL FUTURO ES AHORA</span>
+          <h2 class="section-title evanesce-item delay-2">Conectemos</h2>
+          <p class="lead-text evanesce-item delay-3">
+            ¿Tenés un proyecto, una oportunidad o querés charlar sobre programación? Enviame un mensaje y construyamos algo increíble juntos.
+          </p>
+
+          <div class="social-links evanesce-item delay-4">
+            <a href="https://www.instagram.com/facuttorresss/" target="_blank" rel="noopener noreferrer" class="social-pill instagram-pill">
+              <span>Instagram</span> ↗
+            </a>
+            <a href="tel:+5491154913718" class="social-pill">
+              <span>📞 11 54913718</span>
+            </a>
+            <a href="mailto:tfacundo711@gmail.com" class="social-pill">
+              <span>✉ tfacundo711@gmail.com</span>
+            </a>
+            <a href="https://github.com/tfacundo686/portfolio-facundo" target="_blank" rel="noopener noreferrer" class="social-pill">
+              <span>GitHub</span> ↗
+            </a>
+            <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" class="social-pill">
+              <span>LinkedIn</span> ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="col-form evanesce-item delay-4">
+          <form class="cyber-form" id="contact-form">
+            <div class="form-group">
+              <label for="name">Tu Nombre</label>
+              <input type="text" id="name" name="name" placeholder="Ej. Alex García" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Tu Email</label>
+              <input type="email" id="email" name="email" placeholder="alex@correo.com" required />
+            </div>
+            <div class="form-group">
+              <label for="message">Mensaje</label>
+              <textarea id="message" name="message" rows="4" placeholder="Contame sobre tu idea o propuesta..." required></textarea>
+            </div>
+            <button type="submit" class="portal-btn cyber-btn full-width">
+              <span class="btn-text">Transmitir Mensaje</span>
+              <span class="btn-arrow">⚡</span>
+            </button>
+            <p class="form-feedback" id="form-feedback" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="era-nav-footer evanesce-item delay-6">
+          <button class="ghost-btn" data-go-era="4">← Era Industrial</button>
+          <button class="portal-btn cyber-btn" data-go-era="0">
+            <span class="btn-text">Reiniciar al Big Bang</span>
+            <span class="btn-arrow">↺</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Navegación de Línea Temporal inferior -->
+  <nav class="timeline-dock" aria-label="Línea temporal de épocas">
+    <div class="timeline-nodes">
+      <div class="timeline-track">
+        <div class="timeline-progress" id="timeline-progress"></div>
+      </div>
+      <button class="timeline-node active" data-go-era="0" aria-label="Ir al Big Bang">
+        <span class="node-dot"></span>
+        <span class="node-label">Big Bang</span>
+      </button>
+      <button class="timeline-node" data-go-era="1" aria-label="Ir a Tierra Primordial">
+        <span class="node-dot"></span>
+        <span class="node-label">Primordial</span>
+      </button>
+      <button class="timeline-node" data-go-era="2" aria-label="Ir a Era Mesozoica (Dinosaurios)">
+        <span class="node-dot"></span>
+        <span class="node-label">Dinosaurios</span>
+      </button>
+      <button class="timeline-node" data-go-era="3" aria-label="Ir a Edad de Hielo">
+        <span class="node-dot"></span>
+        <span class="node-label">Hielo</span>
+      </button>
+      <button class="timeline-node" data-go-era="4" aria-label="Ir a Era Industrial">
+        <span class="node-dot"></span>
+        <span class="node-label">Industrial</span>
+      </button>
+      <button class="timeline-node" data-go-era="5" aria-label="Ir a Era Digital">
+        <span class="node-dot"></span>
+        <span class="node-label">Digital</span>
+      </button>
+    </div>
+  </nav>
+
+  <script src="backgrounds.js"></script>
+  <script src="portal.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
