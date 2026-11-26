@@ -1,452 +1,685 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Facundo Torres | Portfolio Temporal — Futuro Programador</title>
-  <meta name="description" content="Portfolio interactivo de Facundo Torres, futuro programador. Un viaje a través de las épocas de la Tierra desde el Big Bang hasta la Era Digital." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#E53E3E" />
+  <title>PromoKiosco — Estudio de Flyers para Almacén y Kiosco</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Bebas+Neue&family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Fredoka:wght@500;600;700&family=Lilita+One&family=Montserrat:wght@600;700;800;900&family=Pacifico&family=Permanent+Marker&family=Righteous&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("promokiosco_theme_v1");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.setAttribute("data-theme", saved || (prefersDark ? "dark" : "light"));
+      } catch (e) {}
+    })();
+  </script>
 </head>
-<body data-era="0">
-  <!-- Cursor personalizado -->
-  <div class="cursor-dot" id="cursor-dot"></div>
-  <div class="cursor-ring" id="cursor-ring"></div>
+<body>
+  <!-- Encabezado: acciones | logo centrado | modo oscuro -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <button type="button" class="hdr-btn" id="btnOpenStoreModal" title="Configurar datos de tu negocio">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
+            <path d="M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0V9z"/>
+            <path d="M5 14v7h14v-7"/>
+          </svg>
+          <span id="headerStoreName" class="hdr-store">Mi Kiosco</span>
+        </button>
 
-  <!-- Canvas de fondo atmosférico por era -->
-  <canvas id="era-canvas" aria-hidden="true"></canvas>
+        <a href="#galeria-promos" class="hdr-btn hdr-count" title="Ver promociones guardadas">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          <span class="hdr-label">Guardadas</span>
+          <span class="badge-num" id="savedCountBadge">0</span>
+        </a>
+      </div>
 
-  <!-- Capa de viñeta y atmósfera -->
-  <div class="atmosphere-overlay" aria-hidden="true"></div>
+      <a href="#" class="brand-center" aria-label="PromoKiosco Inicio">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="10" fill="url(#pkGrad)"/>
+            <path d="M9 12.5C9 10.567 10.567 9 12.5 9H19.8C20.595 9 21.358 9.316 21.92 9.879L26.121 14.08C27.293 15.251 27.293 17.15 26.121 18.322L18.322 26.121C17.15 27.293 15.251 27.293 14.08 26.121L9.879 21.92C9.316 21.358 9 20.595 9 19.8V12.5Z" fill="#FFFFFF" fill-opacity="0.96"/>
+            <circle cx="14.5" cy="14.5" r="2.1" fill="#E53E3E"/>
+            <path d="M16 22L22 16" stroke="#E53E3E" stroke-width="2" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="pkGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#E53E3E"/>
+                <stop offset="1" stop-color="#F59E0B"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">PromoKiosco</span>
+          <span class="brand-tag">Estudio de Ofertas</span>
+        </span>
+      </a>
 
-  <!-- Canvas del Portal del Tiempo (transiciones) -->
-  <div class="portal-overlay" id="portal-overlay" aria-hidden="true">
-    <canvas id="portal-canvas"></canvas>
-    <div class="portal-hud">
-      <div class="portal-label">ATRAVESANDO PORTAL TEMPORAL</div>
-      <div class="portal-year" id="portal-year">-13.800.000.000</div>
-      <div class="portal-destination" id="portal-destination">ERA PRIMORDIAL</div>
-    </div>
-    <div class="portal-flash" id="portal-flash"></div>
-  </div>
-
-  <!-- Barra superior HUD -->
-  <header class="top-hud">
-    <div class="brand" id="brand-home" title="Volver al Big Bang">
-      <span class="brand-orb"></span>
-      <span class="brand-text">FACUNDO<strong>.DEV</strong></span>
-    </div>
-
-    <div class="era-indicator">
-      <span class="era-badge" id="hud-era-badge">ERA 01 / 06</span>
-      <span class="era-year-display" id="hud-era-year">13.8B A.C.</span>
-    </div>
-
-    <div class="hud-actions">
-      <button class="icon-btn" id="sound-toggle" title="Activar/Desactivar sonido del portal" aria-label="Sonido">
-        <svg id="sound-icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
-          <line x1="23" y1="9" x2="17" y2="15"></line>
-          <line x1="17" y1="9" x2="23" y2="15"></line>
-        </svg>
-        <svg id="sound-icon-on" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
-      </button>
+      <div class="header-right">
+        <button type="button" class="hdr-btn theme-toggle" id="btnThemeToggle" aria-label="Cambiar modo oscuro o claro" title="Cambiar tema">
+          <svg class="ico ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <svg class="ico ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <span class="hdr-label" id="themeToggleLabel">Oscuro</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Contenedor principal de las 6 eras -->
-  <main class="timeline-stage" id="timeline-stage">
-
-    <!-- ==================== ERA 0: BIG BANG (INICIO) ==================== -->
-    <section class="era-section active" data-era-index="0" data-era-name="El Big Bang" data-era-year="13.800M A.C." data-numeric-year="-13800000000">
-      <div class="era-content hero-layout">
-        <div class="evanesce-item delay-1">
-          <span class="pill-tag cosmic-tag">✦ ORIGEN DEL UNIVERSO • SINGULARIDAD INICIAL</span>
-        </div>
-
-        <h1 class="hero-title evanesce-item delay-2">
-          <span class="title-small">Hola, soy</span>
-          <span class="glitch-text" data-text="Facundo Torres">Facundo Torres</span>
-        </h1>
-
-        <p class="hero-subtitle evanesce-item delay-3">
-          <span class="typing-text" id="typing-text">Futuro Programador &amp; Creador de Mundos Digitales</span><span class="typing-cursor">|</span>
-        </p>
-
-        <p class="hero-desc evanesce-item delay-4">
-          Todo gran código comienza con una chispa. Te invito a viajar por la historia del planeta Tierra —desde el Big Bang hasta la Era Digital— para descubrir quién soy, mis habilidades y los proyectos que construyo.
-        </p>
-
-        <div class="cta-group evanesce-item delay-5">
-          <button class="portal-btn primary-portal-btn" data-go-era="1">
-            <span class="btn-ring"></span>
-            <span class="btn-text">Abrir Portal del Tiempo</span>
-            <span class="btn-arrow">→</span>
-          </button>
-          <button class="ghost-btn" data-go-era="5">Ir directo a Contacto</button>
-        </div>
-
-        <div class="scroll-hint evanesce-item delay-6">
-          <span>Usa los botones, la línea temporal o las flechas ← → para viajar</span>
-        </div>
+  <main class="main-container">
+    <div class="editing-banner hidden" id="editingBanner" role="status">
+      <div class="editing-banner-info">
+        <span class="editing-dot"></span>
+        <span>Editando: <strong id="editingPromoTitle"></strong></span>
       </div>
-    </section>
+      <button type="button" class="btn-inline-cancel" id="btnCancelEdit">Cancelar edición</button>
+    </div>
 
-    <!-- ==================== ERA 1: TIERRA PRIMORDIAL (SOBRE MÍ) ==================== -->
-    <section class="era-section" data-era-index="1" data-era-name="Tierra Primordial" data-era-year="4.500M A.C." data-numeric-year="-4500000000">
-      <div class="era-content two-col-layout">
-        <div class="col-text">
-          <span class="pill-tag volcanic-tag evanesce-item delay-1">🔥 EÓN HADEICO • FORJANDO LOS CIMIENTOS</span>
-          <h2 class="section-title evanesce-item delay-2">Sobre Mí</h2>
-          <p class="lead-text evanesce-item delay-3">
-            Al igual que la Tierra se forjó entre fuego, presión y transformación constante, mi camino como <strong>futuro programador</strong> nace de la curiosidad incansable por entender cómo funciona la tecnología y crear soluciones reales.
-          </p>
-          <p class="body-text evanesce-item delay-4">
-            Me apasiona el desarrollo web, la lógica de programación y el diseño de experiencias interactivas que sorprendan al usuario. Cada día entreno mis habilidades escribiendo código limpio, resolviendo problemas y aprendiendo nuevas herramientas.
-          </p>
-
-          <div class="stats-row evanesce-item delay-5">
-            <div class="stat-card tilt-card">
-              <span class="stat-number">100%</span>
-              <span class="stat-label">Pasión por el Código</span>
-            </div>
-            <div class="stat-card tilt-card">
-              <span class="stat-number">∞</span>
-              <span class="stat-label">Ganas de Aprender</span>
-            </div>
-            <div class="stat-card tilt-card">
-              <span class="stat-number">24/7</span>
-              <span class="stat-label">Mentalidad Builder</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-visual evanesce-item delay-4">
-          <div class="magma-card tilt-card">
-            <div class="magma-core portrait-core">
-              <div class="orbit-ring r1"></div>
-              <div class="orbit-ring r2"></div>
-              <img src="facundo.png" alt="Facundo Torres" class="facundo-cutout" />
-            </div>
-            <h3>Facundo Torres</h3>
-            <p class="role-badge">Aspirante a Desarrollador Full-Stack</p>
-            <ul class="traits-list">
-              <li><span>⚡</span> Resolución creativa de problemas</li>
-              <li><span>🧠</span> Aprendizaje rápido y autodidacta</li>
-              <li><span>🎯</span> Atención al detalle y animaciones</li>
-              <li><span>🤝</span> Trabajo en equipo y comunicación</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="era-nav-footer evanesce-item delay-6">
-          <button class="ghost-btn" data-go-era="0">← Big Bang</button>
-          <button class="portal-btn volcanic-btn" data-go-era="2">
-            <span class="btn-text">Viajar al Jurásico</span>
-            <span class="btn-arrow">→</span>
+    <div class="studio-grid">
+      <!-- ===================== ASISTENTE POR PASOS ===================== -->
+      <section class="wizard-panel" aria-label="Creador de promociones por pasos">
+        <nav class="stepper" aria-label="Pasos de creación">
+          <button type="button" class="step-tab active" data-step="1">
+            <span class="step-num">1</span>
+            <span class="step-meta"><strong>Fotos</strong><small>Productos y encuadre</small></span>
           </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== ERA 2: ERA MESOZOICA / DINOSAURIOS Y FÓSILES (SKILLS) ==================== -->
-    <section class="era-section" data-era-index="2" data-era-name="Era Mesozoica" data-era-year="150M A.C." data-numeric-year="-150000000">
-      <div class="era-content jurassic-layout">
-        <!-- Silueta decorativa de dinosaurio en el fondo -->
-        <svg class="dino-silhouette" viewBox="0 0 600 320" fill="none" aria-hidden="true">
-          <path d="M510 295 C470 295 450 280 430 250 C400 210 380 185 330 185 C295 185 270 205 245 230 C235 240 225 265 220 295 L195 295 C200 255 205 225 190 210 C175 195 150 210 135 235 C120 260 110 280 105 295 L82 295 C90 250 110 210 125 185 C100 180 65 185 25 200 C55 165 100 148 145 148 C185 148 220 155 260 140 C300 125 325 90 355 55 C375 32 405 20 435 25 C460 29 478 42 485 56 C470 60 455 62 440 60 C448 68 465 72 475 74 C465 88 442 94 420 90 C400 115 390 145 405 175 C425 210 465 245 530 275 Z" fill="currentColor"/>
-        </svg>
-
-        <div class="section-header evanesce-item delay-1">
-          <span class="pill-tag jurassic-tag">🦖 ERA MESOZOICA • DINOSAURIOS &amp; FÓSILES</span>
-          <h2 class="section-title">Fósiles de Conocimiento</h2>
-          <p class="section-subtitle">Haz clic o pasa el cursor sobre cada fósil excavado para descubrir mi stack tecnológico.</p>
-        </div>
-
-        <div class="fossils-grid evanesce-item delay-3">
-          <!-- Fósil 1: Ammonite (HTML & CSS) -->
-          <article class="fossil-card tilt-card" tabindex="0">
-            <div class="fossil-icon">
-              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
-                <path d="M52 50 C52 44 46 42 42 46 C36 52 40 62 49 62 C61 62 68 50 64 38 C59 23 41 18 28 28 C12 40 12 64 26 78 C42 93 70 90 82 72 C92 56 88 32 74 20" stroke-linecap="round"/>
-                <path d="M52 50 L64 38 M49 62 L58 75 M28 28 L40 42 M26 78 L38 66 M82 72 L68 62" stroke-opacity="0.5"/>
-              </svg>
-            </div>
-            <span class="fossil-era">FÓSIL #01 • AMMONITE</span>
-            <h3>HTML5 &amp; CSS3</h3>
-            <p>Maquetación semántica, Flexbox, Grid, animaciones avanzadas y diseño responsive.</p>
-            <div class="skill-bar"><div class="skill-fill" style="--level: 90%"></div></div>
-          </article>
-
-          <!-- Fósil 2: Cráneo T-Rex (JavaScript) -->
-          <article class="fossil-card tilt-card" tabindex="0">
-            <div class="fossil-icon">
-              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
-                <path d="M18 42 C22 24 45 18 70 22 C84 25 90 36 86 48 L62 52 L60 60 L82 62 C78 74 60 80 42 76 L26 72 L18 58 Z" stroke-linejoin="round"/>
-                <circle cx="50" cy="36" r="6"/>
-                <circle cx="72" cy="36" r="4"/>
-                <path d="M62 52 L66 56 M70 51 L74 55 M78 50 L81 54 M66 62 L69 66 M74 62 L76 66" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <span class="fossil-era">FÓSIL #02 • T-REX</span>
-            <h3>JavaScript (ES6+)</h3>
-            <p>Lógica interactiva, manipulación del DOM, Canvas 2D, consumo de APIs y asincronía.</p>
-            <div class="skill-bar"><div class="skill-fill" style="--level: 85%"></div></div>
-          </article>
-
-          <!-- Fósil 3: Trilobite (Python & Lógica) -->
-          <article class="fossil-card tilt-card" tabindex="0">
-            <div class="fossil-icon">
-              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
-                <ellipse cx="50" cy="52" rx="28" ry="36"/>
-                <path d="M50 16 L50 88 M35 22 L35 82 M65 22 L65 82" stroke-opacity="0.6"/>
-                <path d="M24 38 L76 38 M22 50 L78 50 M24 62 L76 62 M29 74 L71 74"/>
-              </svg>
-            </div>
-            <span class="fossil-era">FÓSIL #03 • TRILOBITE</span>
-            <h3>Python &amp; Algoritmos</h3>
-            <p>Estructuras de datos, automatización, resolución de problemas y bases de backend.</p>
-            <div class="skill-bar"><div class="skill-fill" style="--level: 78%"></div></div>
-          </article>
-
-          <!-- Fósil 4: Huella Jurásica (Git, SQL & Herramientas) -->
-          <article class="fossil-card tilt-card" tabindex="0">
-            <div class="fossil-icon">
-              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
-                <path d="M50 86 C35 86 28 74 32 60 L20 34 C18 28 24 24 29 29 L42 46 L46 18 C47 12 53 12 54 18 L58 46 L71 29 C76 24 82 28 80 34 L68 60 C72 74 65 86 50 86 Z" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <span class="fossil-era">FÓSIL #04 • HUELLA JURÁSICA</span>
-            <h3>Git, GitHub &amp; SQL</h3>
-            <p>Control de versiones, trabajo colaborativo, consultas de bases de datos y buenas prácticas.</p>
-            <div class="skill-bar"><div class="skill-fill" style="--level: 80%"></div></div>
-          </article>
-        </div>
-
-        <div class="era-nav-footer evanesce-item delay-5">
-          <button class="ghost-btn" data-go-era="1">← Tierra Primordial</button>
-          <button class="portal-btn jurassic-btn" data-go-era="3">
-            <span class="btn-text">Viajar a la Edad de Hielo</span>
-            <span class="btn-arrow">→</span>
+          <button type="button" class="step-tab" data-step="2">
+            <span class="step-num">2</span>
+            <span class="step-meta"><strong>Precios</strong><small>Nombre y oferta</small></span>
           </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== ERA 3: EDAD DE HIELO (PROYECTOS) ==================== -->
-    <section class="era-section" data-era-index="3" data-era-name="Edad de Hielo" data-era-year="20.000 A.C." data-numeric-year="-20000">
-      <div class="era-content projects-layout">
-        <div class="section-header evanesce-item delay-1">
-          <span class="pill-tag ice-tag">❄️ PLEISTOCENO • CRISTALES EN EL TIEMPO</span>
-          <h2 class="section-title">Proyectos Destacados</h2>
-          <p class="section-subtitle">Creaciones esculpidas en código, preservadas con precisión y diseño moderno.</p>
-        </div>
-
-        <div class="projects-grid evanesce-item delay-3">
-          <a href="proyectos/kiosco/index.html" target="_blank" rel="noopener noreferrer" class="ice-card tilt-card project-link">
-            <div class="ice-card-top">
-              <span class="project-num">01</span>
-              <span class="project-status">Abrir Proyecto ↗</span>
-            </div>
-            <h3>Sistema de Kiosco &amp; Flyers</h3>
-            <p>Aplicación web para gestión de productos, almacenamiento local y generador visual de flyers promocionales.</p>
-            <div class="tech-pills">
-              <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Storage</span>
-            </div>
-          </a>
-
-          <a href="proyectos/bibliotec/index.html" target="_blank" rel="noopener noreferrer" class="ice-card tilt-card project-link">
-            <div class="ice-card-top">
-              <span class="project-num">02</span>
-              <span class="project-status">Abrir Proyecto ↗</span>
-            </div>
-            <h3>BiblioTec — E.E.S.T. N° 5</h3>
-            <p>Biblioteca virtual escolar por año y especialidad (Informática, Programación y MMO) con buscador, historial y panel docente/admin.</p>
-            <div class="tech-pills">
-              <span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Lucide</span>
-            </div>
-          </a>
-
-          <a href="proyectos/viajes-los-choris/index.html" target="_blank" rel="noopener noreferrer" class="ice-card tilt-card project-link">
-            <div class="ice-card-top">
-              <span class="project-num">03</span>
-              <span class="project-status">Abrir Proyecto ↗</span>
-            </div>
-            <h3>Viajes Los Choris</h3>
-            <p>Plataforma de venta de pasajes, hoteles y paquetes turísticos con buscador, ofertas, carrito de compras y checkout completo.</p>
-            <div class="tech-pills">
-              <span>Tailwind CSS</span><span>JavaScript</span><span>LocalStorage</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="era-nav-footer evanesce-item delay-5">
-          <button class="ghost-btn" data-go-era="2">← Era Mesozoica</button>
-          <button class="portal-btn ice-btn" data-go-era="4">
-            <span class="btn-text">Viajar a la Era Industrial</span>
-            <span class="btn-arrow">→</span>
+          <button type="button" class="step-tab" data-step="3">
+            <span class="step-num">3</span>
+            <span class="step-meta"><strong>Estilo</strong><small>Plantilla y textos</small></span>
           </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== ERA 4: ERA INDUSTRIAL & MODERNA (EDUCACIÓN) ==================== -->
-    <section class="era-section" data-era-index="4" data-era-name="Era Industrial" data-era-year="1890 D.C." data-numeric-year="1890">
-      <div class="era-content industrial-layout">
-        <div class="section-header evanesce-item delay-1">
-          <span class="pill-tag industrial-tag">⚙️ REVOLUCIÓN DEL CONOCIMIENTO • ENGRANAJES</span>
-          <h2 class="section-title">Formación &amp; Evolución</h2>
-          <p class="section-subtitle">Cada etapa de aprendizaje es un engranaje que impulsa mi carrera como programador.</p>
-        </div>
-
-        <div class="milestones-list evanesce-item delay-3">
-          <div class="milestone-item tilt-card">
-            <div class="milestone-year">2020 - 2022</div>
-            <div class="milestone-body">
-              <h3>Escuela Técnica N° 4 de Berazategui</h3>
-              <p>Inicio de mi formación técnica, despertando el interés por la tecnología, los sistemas y la resolución de problemas.</p>
-            </div>
-          </div>
-
-          <div class="milestone-item tilt-card">
-            <div class="milestone-year">2023 - Act.</div>
-            <div class="milestone-body">
-              <h3>Escuela Técnica N° 5 de Berazategui</h3>
-              <p>Continuación y profundización de mi carrera técnica, fortaleciendo las bases de tecnología y desarrollo de proyectos.</p>
-            </div>
-          </div>
-
-          <div class="milestone-item tilt-card">
-            <div class="milestone-year">2024</div>
-            <div class="milestone-body">
-              <h3>Primeras Líneas de Código — Modalidad Programación</h3>
-              <p>Ingreso a la modalidad de Programación: descubrimiento de la lógica algorítmica, fundamentos de código y desarrollo web.</p>
-            </div>
-          </div>
-
-          <div class="milestone-item tilt-card">
-            <div class="milestone-year">2026+</div>
-            <div class="milestone-body">
-              <h3>Camino a Programador Profesional</h3>
-              <p>Desarrollo de interfaces interactivas, frameworks modernos, backend, bases de datos y proyectos reales de alto impacto.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="era-nav-footer evanesce-item delay-5">
-          <button class="ghost-btn" data-go-era="3">← Edad de Hielo</button>
-          <button class="portal-btn industrial-btn" data-go-era="5">
-            <span class="btn-text">Saltar a la Era Digital</span>
-            <span class="btn-arrow">→</span>
+          <button type="button" class="step-tab" data-step="4">
+            <span class="step-num">4</span>
+            <span class="step-meta"><strong>Fondo</strong><small>Colores y tramas</small></span>
           </button>
-        </div>
-      </div>
-    </section>
+          <button type="button" class="step-tab" data-step="5">
+            <span class="step-num">5</span>
+            <span class="step-meta"><strong>Publicar</strong><small>Guardar y enviar</small></span>
+          </button>
+        </nav>
 
-    <!-- ==================== ERA 5: ERA DIGITAL / FUTURO (CONTACTO) ==================== -->
-    <section class="era-section" data-era-index="5" data-era-name="Era Digital" data-era-year="2026 D.C." data-numeric-year="2026">
-      <div class="era-content contact-layout">
-        <div class="col-text">
-          <span class="pill-tag cyber-tag evanesce-item delay-1">🌐 ERA DIGITAL • EL FUTURO ES AHORA</span>
-          <h2 class="section-title evanesce-item delay-2">Conectemos</h2>
-          <p class="lead-text evanesce-item delay-3">
-            ¿Tenés un proyecto, una oportunidad o querés charlar sobre programación? Enviame un mensaje y construyamos algo increíble juntos.
-          </p>
+        <form id="promoForm" class="wizard-card" autocomplete="off" onsubmit="return false;">
+          <!-- ========== PASO 1: FOTOS ========== -->
+          <div class="step-pane active" data-pane="1">
+            <div class="pane-head">
+              <div>
+                <span class="pane-kicker">Paso 1 de 5</span>
+                <h2>Fotos de los productos</h2>
+                <p>Subí una foto o hasta 4 para armar un combo, y ajustá cómo se ven.</p>
+              </div>
+              <span class="photo-counter" id="photoCounter">0 / 4</span>
+            </div>
 
-          <div class="social-links evanesce-item delay-4">
-            <a href="https://www.instagram.com/facuttorresss/" target="_blank" rel="noopener noreferrer" class="social-pill instagram-pill">
-              <span>Instagram</span> ↗
-            </a>
-            <a href="tel:+5491154913718" class="social-pill">
-              <span>📞 11 54913718</span>
-            </a>
-            <a href="mailto:tfacundo711@gmail.com" class="social-pill">
-              <span>✉ tfacundo711@gmail.com</span>
-            </a>
-            <a href="https://github.com/tfacundo686/portfolio-facundo" target="_blank" rel="noopener noreferrer" class="social-pill">
-              <span>GitHub</span> ↗
-            </a>
-            <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" class="social-pill">
-              <span>LinkedIn</span> ↗
-            </a>
+            <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Subir fotos de productos">
+              <input type="file" id="photoInput" accept="image/*" multiple hidden />
+              <div class="upload-ico-wrap">
+                <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <p class="upload-title">Arrastrá tus fotos o <span>elegilas desde tu equipo</span></p>
+              <p class="upload-hint">JPG, PNG o WEBP — Los PNG sin fondo quedan geniales con el marco “Sticker”</p>
+            </div>
+
+            <div class="photo-thumbs" id="photoThumbs" aria-live="polite"></div>
+
+            <div class="step-extras">
+              <button type="button" class="btn-subtle" id="btnAddSamplePhoto">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Cargar combo de ejemplo
+              </button>
+            </div>
+
+            <details class="opt-section" open>
+              <summary><span>Ajuste de imagen<small>Cómo entra la foto en el marco</small></span></summary>
+              <div class="opt-body">
+                <div class="opt-row">
+                  <span class="opt-label">Encaje de la foto</span>
+                  <div class="seg" data-seg="photoFit">
+                    <button type="button" data-value="cover">Rellenar marco</button>
+                    <button type="button" data-value="contain">Ajustar al marco</button>
+                    <button type="button" data-value="marco">Marco a la foto</button>
+                  </div>
+                  <p class="opt-hint">“Ajustar al marco” muestra la foto completa sin recortar. “Marco a la foto” adapta el marco a la forma de la imagen.</p>
+                </div>
+
+                <div class="opt-row">
+                  <span class="opt-label">Estilo de marco</span>
+                  <div class="seg" data-seg="photoStyle">
+                    <button type="button" data-value="postal">Postal</button>
+                    <button type="button" data-value="sticker">Sticker</button>
+                    <button type="button" data-value="redondeada">Redondeada</button>
+                    <button type="button" data-value="circulo">Círculo</button>
+                    <button type="button" data-value="sin-marco">Sin marco</button>
+                  </div>
+                </div>
+
+                <div class="range-pair">
+                  <label class="opt-row">
+                    <span class="opt-label">Zoom <output data-out="photoZoom" data-suffix="%"></output></span>
+                    <input type="range" class="range" data-bind="photoZoom" min="60" max="200" step="5" />
+                  </label>
+                  <label class="opt-row">
+                    <span class="opt-label">Tamaño <output data-out="photoScale" data-suffix="%"></output></span>
+                    <input type="range" class="range" data-bind="photoScale" min="70" max="120" step="5" />
+                  </label>
+                  <label class="opt-row">
+                    <span class="opt-label">Mover horizontal <output data-out="photoOffsetX"></output></span>
+                    <input type="range" class="range" data-bind="photoOffsetX" min="-50" max="50" step="5" />
+                  </label>
+                  <label class="opt-row">
+                    <span class="opt-label">Mover vertical <output data-out="photoOffsetY"></output></span>
+                    <input type="range" class="range" data-bind="photoOffsetY" min="-50" max="50" step="5" />
+                  </label>
+                </div>
+                <p class="opt-hint">El encuadre se mueve cuando la foto sobresale del marco (subí el zoom para recortar mejor).</p>
+
+                <label class="toggle"><span>Inclinar fotos (estilo collage)</span><input type="checkbox" data-bind="photoTilt" /></label>
+                <label class="toggle"><span>Sombra debajo de las fotos</span><input type="checkbox" data-bind="photoShadow" /></label>
+              </div>
+            </details>
           </div>
-        </div>
 
-        <div class="col-form evanesce-item delay-4">
-          <form class="cyber-form" id="contact-form">
-            <div class="form-group">
-              <label for="name">Tu Nombre</label>
-              <input type="text" id="name" name="name" placeholder="Ej. Alex García" required />
+          <!-- ========== PASO 2: PRECIOS ========== -->
+          <div class="step-pane" data-pane="2">
+            <div class="pane-head">
+              <div>
+                <span class="pane-kicker">Paso 2 de 5</span>
+                <h2>Nombre y precios de la oferta</h2>
+                <p>Definí el título, el valor anterior y el precio rebajado.</p>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="email">Tu Email</label>
-              <input type="email" id="email" name="email" placeholder="alex@correo.com" required />
+
+            <div class="form-grid">
+              <div class="field full">
+                <label for="inputTitle">Nombre de la promoción o productos *</label>
+                <input type="text" id="inputTitle" data-bind="title" maxlength="70" placeholder="Ej: Combo Merienda: 2 Alfajores + Gaseosa 500ml" />
+              </div>
+
+              <div class="field full">
+                <label for="inputSubtitle">Subtítulo o aclaración (opcional)</label>
+                <input type="text" id="inputSubtitle" data-bind="subtitle" maxlength="90" placeholder="Ej: Sabores surtidos • Llevando 2 unidades" />
+              </div>
+
+              <div class="field">
+                <label for="inputOriginalPrice">Valor original</label>
+                <div class="input-prefix">
+                  <span>$</span>
+                  <input type="number" id="inputOriginalPrice" data-bind="originalPrice" min="0" step="any" inputmode="decimal" placeholder="2500" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="inputPromoPrice">Precio con rebaja *</label>
+                <div class="input-prefix promo-input">
+                  <span>$</span>
+                  <input type="number" id="inputPromoPrice" data-bind="promoPrice" min="0" step="any" inputmode="decimal" placeholder="1890" />
+                </div>
+              </div>
+
+              <div class="discount-live-bar full">
+                <span class="discount-pill" id="liveDiscountPct">0% OFF</span>
+                <span class="discount-savings" id="liveSavingsText">Ingresá ambos precios para calcular el ahorro</span>
+              </div>
+
+              <div class="field">
+                <label for="inputBadgeText">Texto del sello</label>
+                <input type="text" id="inputBadgeText" data-bind="badgeText" maxlength="22" placeholder="Automático (% OFF)" />
+                <div class="quick-tags">
+                  <button type="button" data-set="badgeText" data-value="">Auto %</button>
+                  <button type="button" data-set="badgeText" data-value="OFERTA">OFERTA</button>
+                  <button type="button" data-set="badgeText" data-value="2 x 1">2 x 1</button>
+                  <button type="button" data-set="badgeText" data-value="COMBO">COMBO</button>
+                  <button type="button" data-set="badgeText" data-value="SOLO HOY">SOLO HOY</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="inputValidity">Validez o pie del cartel</label>
+                <input type="text" id="inputValidity" data-bind="validity" maxlength="60" placeholder="Ej: Válido hasta el domingo" />
+              </div>
             </div>
-            <div class="form-group">
-              <label for="message">Mensaje</label>
-              <textarea id="message" name="message" rows="4" placeholder="Contame sobre tu idea o propuesta..." required></textarea>
+          </div>
+
+          <!-- ========== PASO 3: ESTILO ========== -->
+          <div class="step-pane" data-pane="3">
+            <div class="pane-head">
+              <div>
+                <span class="pane-kicker">Paso 3 de 5</span>
+                <h2>Estilo del flyer</h2>
+                <p>Elegí una plantilla con personalidad y personalizá cada detalle.</p>
+              </div>
+              <button type="button" class="btn-subtle btn-sm" id="btnResetDesign" title="Volver al diseño original de la plantilla">Restablecer</button>
             </div>
-            <button type="submit" class="portal-btn cyber-btn full-width">
-              <span class="btn-text">Transmitir Mensaje</span>
-              <span class="btn-arrow">⚡</span>
+
+            <details class="opt-section" open>
+              <summary><span>Plantillas<small>Un punto de partida con carácter</small></span></summary>
+              <div class="opt-body">
+                <div class="template-grid" id="templateGrid"></div>
+              </div>
+            </details>
+
+            <details class="opt-section" open>
+              <summary><span>Paleta de colores<small>Combinaciones listas o a tu gusto</small></span></summary>
+              <div class="opt-body">
+                <div class="theme-grid" id="themeGrid"></div>
+                <div class="color-pickers-row two">
+                  <label class="color-chip"><input type="color" data-bind="accent" /><span>Acento / precio</span></label>
+                  <label class="color-chip"><input type="color" data-bind="textColor" /><span>Texto</span></label>
+                </div>
+              </div>
+            </details>
+
+            <details class="opt-section">
+              <summary><span>Tipografía y título<small>Fuente, mayúsculas, tamaño y efecto</small></span></summary>
+              <div class="opt-body">
+                <div class="font-grid" id="fontGrid"></div>
+                <div class="opt-row">
+                  <span class="opt-label">Formato del texto</span>
+                  <div class="seg" data-seg="titleCase">
+                    <button type="button" data-value="normal">Aa Normal</button>
+                    <button type="button" data-value="upper">AA Mayúsculas</button>
+                  </div>
+                </div>
+                <div class="opt-row">
+                  <span class="opt-label">Efecto del título</span>
+                  <div class="seg" data-seg="textEffect">
+                    <button type="button" data-value="sombra">Sombra</button>
+                    <button type="button" data-value="contorno">Contorno</button>
+                    <button type="button" data-value="3d">3D</button>
+                    <button type="button" data-value="brillo">Neón</button>
+                    <button type="button" data-value="ninguno">Plano</button>
+                  </div>
+                </div>
+                <label class="opt-row">
+                  <span class="opt-label">Tamaño del título <output data-out="titleScale" data-suffix="%"></output></span>
+                  <input type="range" class="range" data-bind="titleScale" min="70" max="130" step="5" />
+                </label>
+              </div>
+            </details>
+
+            <details class="opt-section">
+              <summary><span>Sello de descuento<small>Forma, posición y tamaño</small></span></summary>
+              <div class="opt-body">
+                <div class="opt-row">
+                  <span class="opt-label">Forma</span>
+                  <div class="seg" data-seg="badgeShape">
+                    <button type="button" data-value="estrella">Estrella</button>
+                    <button type="button" data-value="circulo">Círculo</button>
+                    <button type="button" data-value="cinta">Cinta</button>
+                    <button type="button" data-value="etiqueta">Etiqueta</button>
+                    <button type="button" data-value="ninguno">Ocultar</button>
+                  </div>
+                </div>
+                <div class="opt-row" data-show-if="badgeShape!=ninguno">
+                  <span class="opt-label">Posición</span>
+                  <div class="seg" data-seg="badgePos">
+                    <button type="button" data-value="izq">Izquierda</button>
+                    <button type="button" data-value="der">Derecha</button>
+                  </div>
+                </div>
+                <label class="opt-row" data-show-if="badgeShape!=ninguno">
+                  <span class="opt-label">Tamaño del sello <output data-out="badgeScale" data-suffix="%"></output></span>
+                  <input type="range" class="range" data-bind="badgeScale" min="70" max="130" step="5" />
+                </label>
+              </div>
+            </details>
+
+            <details class="opt-section">
+              <summary><span>Tarjeta de precio<small>Cómo se destaca el precio</small></span></summary>
+              <div class="opt-body">
+                <div class="seg" data-seg="priceStyle">
+                  <button type="button" data-value="oscura">Oscura</button>
+                  <button type="button" data-value="clara">Clara</button>
+                  <button type="button" data-value="acento">Color acento</button>
+                  <button type="button" data-value="contorno">Contorno</button>
+                  <button type="button" data-value="gondola">Góndola</button>
+                </div>
+                <label class="toggle"><span>Mostrar “Ahorrás $…”</span><input type="checkbox" data-bind="showSavings" /></label>
+              </div>
+            </details>
+
+            <details class="opt-section">
+              <summary><span>Marco y cinta<small>Bordes del cartel y cinta en la esquina</small></span></summary>
+              <div class="opt-body">
+                <div class="opt-row">
+                  <span class="opt-label">Marco del cartel</span>
+                  <div class="seg" data-seg="frameStyle">
+                    <button type="button" data-value="linea">Línea</button>
+                    <button type="button" data-value="doble">Doble</button>
+                    <button type="button" data-value="punteado">Puntos</button>
+                    <button type="button" data-value="ticket">Cupón</button>
+                    <button type="button" data-value="madera">Madera</button>
+                    <button type="button" data-value="ninguno">Sin marco</button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="inputRibbon">Cinta de esquina</label>
+                  <input type="text" id="inputRibbon" data-bind="cornerRibbon" maxlength="20" placeholder="Ej: NUEVO (vacío = sin cinta)" />
+                  <div class="quick-tags">
+                    <button type="button" data-set="cornerRibbon" data-value="">Sin cinta</button>
+                    <button type="button" data-set="cornerRibbon" data-value="NUEVO">NUEVO</button>
+                    <button type="button" data-set="cornerRibbon" data-value="IMPERDIBLE">IMPERDIBLE</button>
+                    <button type="button" data-set="cornerRibbon" data-value="ÚLTIMAS UNIDADES">ÚLTIMAS UNIDADES</button>
+                    <button type="button" data-set="cornerRibbon" data-value="FIN DE SEMANA">FIN DE SEMANA</button>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- ========== PASO 4: FONDO ========== -->
+          <div class="step-pane" data-pane="4">
+            <div class="pane-head">
+              <div>
+                <span class="pane-kicker">Paso 4 de 5</span>
+                <h2>Fondo de la promoción</h2>
+                <p>Degradados, foto propia, tramas y efectos de luz.</p>
+              </div>
+            </div>
+
+            <details class="opt-section" open>
+              <summary><span>Tipo de fondo<small>Color, degradado o una foto tuya</small></span></summary>
+              <div class="opt-body">
+                <div class="seg" data-seg="bgType">
+                  <button type="button" data-value="degradado">Degradado</button>
+                  <button type="button" data-value="radial">Radial</button>
+                  <button type="button" data-value="solido">Sólido</button>
+                  <button type="button" data-value="imagen">Foto</button>
+                </div>
+
+                <div class="color-pickers-row two">
+                  <label class="color-chip"><input type="color" data-bind="bg1" /><span>Color 1</span></label>
+                  <label class="color-chip" data-show-if="bgType!=solido"><input type="color" data-bind="bg2" /><span>Color 2</span></label>
+                </div>
+
+                <div class="inline-actions" data-show-if="bgType!=solido">
+                  <button type="button" class="btn-subtle btn-sm" id="btnSwapColors">⇄ Invertir colores</button>
+                </div>
+
+                <label class="opt-row" data-show-if="bgType=degradado|imagen">
+                  <span class="opt-label">Dirección del degradado <output data-out="bgAngle" data-suffix="°"></output></span>
+                  <input type="range" class="range" data-bind="bgAngle" min="0" max="360" step="5" />
+                </label>
+
+                <div class="bg-image-block" data-show-if="bgType=imagen">
+                  <div class="bg-upload-row">
+                    <img id="bgImagePreview" class="bg-preview hidden" alt="Fondo elegido" />
+                    <input type="file" id="bgImageInput" accept="image/*" hidden />
+                    <button type="button" class="btn-secondary btn-sm" id="btnBgUpload">Subir foto de fondo</button>
+                    <button type="button" class="btn-subtle btn-sm hidden" id="btnBgRemove">Quitar</button>
+                  </div>
+                  <p class="opt-hint">Ideal: una foto de tu local, la góndola o la vidriera.</p>
+                  <div class="range-pair">
+                    <label class="opt-row">
+                      <span class="opt-label">Desenfoque <output data-out="bgBlur"></output></span>
+                      <input type="range" class="range" data-bind="bgBlur" min="0" max="20" step="1" />
+                    </label>
+                    <label class="opt-row">
+                      <span class="opt-label">Tinte de color <output data-out="bgOverlay" data-suffix="%"></output></span>
+                      <input type="range" class="range" data-bind="bgOverlay" min="0" max="90" step="5" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="opt-section" open>
+              <summary><span>Trama<small>Textura decorativa sobre el fondo</small></span></summary>
+              <div class="opt-body">
+                <div class="seg seg-grid" data-seg="pattern" id="patternGrid"></div>
+                <div class="range-pair" data-show-if="pattern!=ninguno">
+                  <label class="opt-row">
+                    <span class="opt-label">Intensidad <output data-out="patternOpacity" data-suffix="%"></output></span>
+                    <input type="range" class="range" data-bind="patternOpacity" min="0" max="100" step="5" />
+                  </label>
+                  <div class="opt-row">
+                    <span class="opt-label">Tono</span>
+                    <div class="seg" data-seg="patternTone">
+                      <button type="button" data-value="claro">Claro</button>
+                      <button type="button" data-value="oscuro">Oscuro</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="opt-section" open>
+              <summary><span>Efectos<small>Luz, bordes y textura</small></span></summary>
+              <div class="opt-body">
+                <label class="toggle"><span>Luz detrás de los productos</span><input type="checkbox" data-bind="spotlight" /></label>
+                <label class="toggle"><span>Viñeta oscura en los bordes</span><input type="checkbox" data-bind="vignette" /></label>
+                <label class="toggle"><span>Textura granulada (papel)</span><input type="checkbox" data-bind="grain" /></label>
+              </div>
+            </details>
+          </div>
+
+          <!-- ========== PASO 5: PUBLICAR ========== -->
+          <div class="step-pane" data-pane="5">
+            <div class="pane-head">
+              <div>
+                <span class="pane-kicker">Paso 5 de 5</span>
+                <h2>Tu flyer está listo</h2>
+                <p>Guardalo para editarlo después o compartilo ahora mismo.</p>
+              </div>
+            </div>
+
+            <div class="publish-primary">
+              <button type="button" class="btn-primary btn-save" id="btnSavePromo">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                  <polyline points="17 21 17 13 7 13 7 21"/>
+                  <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span id="btnSaveLabel">Guardar promoción</span>
+              </button>
+              <button type="button" class="btn-secondary" id="btnResetForm">Nueva promo</button>
+            </div>
+
+            <div class="export-grid">
+              <button type="button" class="action-btn btn-wsp" id="btnShareWsp">
+                <span class="act-ico">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                  </svg>
+                </span>
+                <span><strong>Compartir en WhatsApp</strong><small>Imagen + texto armado</small></span>
+              </button>
+
+              <button type="button" class="action-btn btn-story" id="btnShareStory">
+                <span class="act-ico">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="2" width="12" height="20" rx="2.5"/>
+                    <line x1="12" y1="18" x2="12.01" y2="18"/>
+                  </svg>
+                </span>
+                <span><strong>Historia de WhatsApp</strong><small>Formato vertical 9:16</small></span>
+              </button>
+
+              <button type="button" class="action-btn btn-download" id="btnDownloadImg">
+                <span class="act-ico">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                </span>
+                <span><strong>Descargar imagen</strong><small>PNG en alta definición</small></span>
+              </button>
+
+              <button type="button" class="action-btn btn-print" id="btnPrintFlyer">
+                <span class="act-ico">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"/>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                    <rect x="6" y="14" width="12" height="8"/>
+                  </svg>
+                </span>
+                <span><strong>Imprimir cartel</strong><small>1, 2 o 4 por hoja A4</small></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Navegación inferior fija -->
+          <div class="wizard-footer">
+            <button type="button" class="btn-secondary" id="btnPrevStep">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              Anterior
             </button>
-            <p class="form-feedback" id="form-feedback" aria-live="polite"></p>
-          </form>
-        </div>
+            <span class="step-indicator-text" id="stepIndicatorText">Paso 1 de 5</span>
+            <button type="button" class="btn-next" id="btnNextStep">
+              Siguiente
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </form>
+      </section>
 
-        <div class="era-nav-footer evanesce-item delay-6">
-          <button class="ghost-btn" data-go-era="4">← Era Industrial</button>
-          <button class="portal-btn cyber-btn" data-go-era="0">
-            <span class="btn-text">Reiniciar al Big Bang</span>
-            <span class="btn-arrow">↺</span>
-          </button>
+      <!-- ===================== VISTA PREVIA ===================== -->
+      <aside class="preview-panel" aria-label="Vista previa del flyer">
+        <div class="preview-sticky">
+          <div class="preview-card">
+            <div class="preview-topbar">
+              <div class="preview-title-wrap">
+                <span class="live-dot"></span>
+                <h3>Vista previa</h3>
+              </div>
+              <div class="format-switcher" role="group" aria-label="Formato del flyer">
+                <button type="button" class="fmt-btn active" id="btnFmtSquare">Post 1:1</button>
+                <button type="button" class="fmt-btn" id="btnFmtStory">Historia 9:16</button>
+              </div>
+            </div>
+
+            <div class="canvas-stage" id="canvasStage">
+              <canvas id="flyerCanvas" width="1080" height="1080" aria-label="Vista previa de la promoción"></canvas>
+            </div>
+
+            <div class="preview-quickbar">
+              <button type="button" class="quick-mini-btn" id="btnQuickSave">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                Guardar
+              </button>
+              <button type="button" class="quick-mini-btn" id="btnQuickDownload">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descargar
+              </button>
+              <button type="button" class="quick-mini-btn" id="btnQuickPrint">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Imprimir
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ===================== GALERÍA ===================== -->
+    <section class="gallery-section" id="galeria-promos" aria-label="Promociones guardadas">
+      <div class="gallery-header">
+        <div>
+          <h2>Promociones guardadas</h2>
+          <p>Almacenadas en este navegador. Tocá cualquiera para editarla.</p>
+        </div>
+        <div class="gallery-controls">
+          <div class="search-box">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="searchPromos" placeholder="Buscar por nombre..." />
+          </div>
+          <button type="button" class="btn-outline-danger hidden" id="btnClearAll">Vaciar todo</button>
         </div>
       </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
     </section>
-
   </main>
 
-  <!-- Navegación de Línea Temporal inferior -->
-  <nav class="timeline-dock" aria-label="Línea temporal de épocas">
-    <div class="timeline-nodes">
-      <div class="timeline-track">
-        <div class="timeline-progress" id="timeline-progress"></div>
+  <!-- MODAL: DATOS DEL NEGOCIO -->
+  <div class="modal-backdrop hidden" id="storeModal" role="dialog" aria-modal="true" aria-labelledby="storeModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="storeModalTitle">Datos de tu negocio</h3>
+        <button type="button" class="modal-close" data-close-modal="storeModal" aria-label="Cerrar">✕</button>
       </div>
-      <button class="timeline-node active" data-go-era="0" aria-label="Ir al Big Bang">
-        <span class="node-dot"></span>
-        <span class="node-label">Big Bang</span>
-      </button>
-      <button class="timeline-node" data-go-era="1" aria-label="Ir a Tierra Primordial">
-        <span class="node-dot"></span>
-        <span class="node-label">Primordial</span>
-      </button>
-      <button class="timeline-node" data-go-era="2" aria-label="Ir a Era Mesozoica (Dinosaurios)">
-        <span class="node-dot"></span>
-        <span class="node-label">Dinosaurios</span>
-      </button>
-      <button class="timeline-node" data-go-era="3" aria-label="Ir a Edad de Hielo">
-        <span class="node-dot"></span>
-        <span class="node-label">Hielo</span>
-      </button>
-      <button class="timeline-node" data-go-era="4" aria-label="Ir a Era Industrial">
-        <span class="node-dot"></span>
-        <span class="node-label">Industrial</span>
-      </button>
-      <button class="timeline-node" data-go-era="5" aria-label="Ir a Era Digital">
-        <span class="node-dot"></span>
-        <span class="node-label">Digital</span>
-      </button>
+      <div class="modal-body">
+        <p class="modal-desc">Se muestran automáticamente en el encabezado y pie de tus flyers.</p>
+        <div class="form-grid">
+          <div class="field full">
+            <label for="storeNameInput">Nombre del kiosco o almacén</label>
+            <input type="text" id="storeNameInput" maxlength="40" placeholder="Ej: Almacén Don Pedro" />
+          </div>
+          <div class="field full">
+            <label for="storeAddressInput">Dirección o barrio (opcional)</label>
+            <input type="text" id="storeAddressInput" maxlength="55" placeholder="Ej: Av. San Martín 450" />
+          </div>
+          <div class="field full">
+            <label for="storePhoneInput">WhatsApp de pedidos (opcional)</label>
+            <input type="text" id="storePhoneInput" maxlength="30" placeholder="Ej: 11 5555-4444" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-close-modal="storeModal">Cancelar</button>
+        <button type="button" class="btn-primary" id="btnSaveStore">Guardar datos</button>
+      </div>
     </div>
-  </nav>
+  </div>
 
-  <script src="backgrounds.js"></script>
-  <script src="portal.js"></script>
+  <!-- MODAL: IMPRESIÓN -->
+  <div class="modal-backdrop hidden" id="printModal" role="dialog" aria-modal="true" aria-labelledby="printModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="printModalTitle">Imprimir en hoja A4</h3>
+        <button type="button" class="modal-close" data-close-modal="printModal" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Elegí cuántas copias querés acomodar por página:</p>
+        <div class="print-options">
+          <button type="button" class="print-opt-btn" data-copies="1">
+            <span class="print-opt-visual layout-1"><span></span></span>
+            <strong>1 grande</strong><small>Vidriera</small>
+          </button>
+          <button type="button" class="print-opt-btn" data-copies="2">
+            <span class="print-opt-visual layout-2"><span></span><span></span></span>
+            <strong>2 medianos</strong><small>Mostrador</small>
+          </button>
+          <button type="button" class="print-opt-btn" data-copies="4">
+            <span class="print-opt-visual layout-4"><span></span><span></span><span></span><span></span></span>
+            <strong>4 volantes</strong><small>Para repartir</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="printSheet" class="print-sheet" aria-hidden="true"></div>
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="storage.js"></script>
+  <script src="flyer-renderer.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
